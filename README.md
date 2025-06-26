@@ -133,7 +133,7 @@ Our application follows a clean, layered architecture pattern:
 
 2. **Backend Setup**
    ```bash
-   cd backend
+   cd api
    mvn clean install
    # Configure database in application.properties
    mvn spring-boot:run
