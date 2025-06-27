@@ -2,6 +2,7 @@ package com.budgetwise.api.user;
 
 import com.budgetwise.api.budget.Budget;
 import com.budgetwise.api.category.Category;
+import com.budgetwise.api.global.Country;
 import com.budgetwise.api.recurringtransaction.RecurringTransaction;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transactiontemplate.TransactionTemplate;
@@ -56,10 +57,6 @@ public class User {
     private String dateFormat = "YYYY-MM-DD";
 
     @Builder.Default
-    @Column(length = 3, columnDefinition = "VARCHAR(3) DEFAULT 'MAD'")
-    private String currency = "MAD";
-
-    @Builder.Default
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean DEFAULT true")
     private boolean isActive = true;
 
@@ -84,6 +81,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id", nullable = false)
+    private Country country;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
