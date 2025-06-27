@@ -11,6 +11,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
     show-sql: true
 
 server:
@@ -19,6 +22,10 @@ server:
 springdoc:
   api-docs:
     path: /api-docs
+
+seeder:
+  countries:
+    exclude: Israel,Western Sahara
 
 jwt:
   secret: ${JWT_SECRET}
