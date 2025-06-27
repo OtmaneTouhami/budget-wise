@@ -34,3 +34,5 @@ build/
 
 ### Environments Variables ###
 .env
+
+keeper
