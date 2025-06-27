@@ -1,5 +1,9 @@
 package com.budgetwise.api.user;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.budgetwise.api.budget.Budget;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.global.Country;
@@ -14,6 +18,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +31,7 @@ import static org.hibernate.annotations.UuidGenerator.Style.TIME;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -94,4 +99,28 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive && !this.isDeleted;
+    }
 }
