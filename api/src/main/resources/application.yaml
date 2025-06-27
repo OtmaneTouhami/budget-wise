@@ -2,7 +2,7 @@ spring:
   application:
     name: BudgetWise
   datasource:
-    url: jdbc:mariadb://localhost:3306/budgetwise?createDatabaseIfNotExist=true
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
