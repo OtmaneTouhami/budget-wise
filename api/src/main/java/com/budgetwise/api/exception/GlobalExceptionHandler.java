@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.CONFLICT.value())
                 .error(HttpStatus.CONFLICT.getReasonPhrase())
-                .message(ex.getMessage()) // Use the exception's message
+                .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 

@@ -1,6 +1,7 @@
 package com.budgetwise.api.category;
 
 import com.budgetwise.api.budget.Budget;
+import com.budgetwise.api.category.enums.CategoryType;
 import com.budgetwise.api.recurringtransaction.RecurringTransaction;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transactiontemplate.TransactionTemplate;
