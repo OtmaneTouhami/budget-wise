@@ -17,20 +17,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final CountryRepository countryRepository; // Inject to find the country
+    private final CountryRepository countryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final AuthMapper authMapper;
 
-    // --- LOGIN METHOD ---
     public AuthenticationResponse login(AuthenticationRequest request) {
-        // This part triggers the DaoAuthenticationProvider to check the password
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -40,14 +41,17 @@ public class AuthServiceImpl implements AuthService {
 
         // If the above line doesn't throw an exception, the user is valid
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(); // We know the user exists at this point
+                .orElseThrow();
+
+        LocalDateTime loginTime = LocalDateTime.now();
+        user.setLastLoginDate(loginTime);
+        userRepository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
 
-    // --- REGISTER METHOD ---
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
@@ -61,16 +65,20 @@ public class AuthServiceImpl implements AuthService {
         Country country = countryRepository.findById(request.getCountryId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Country ID: " + request.getCountryId()));
 
-        // 3. Manually set the fields that were ignored by the mapper
-        user.setCountry(country);
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Securely hash the password
-        user.setActive(true); // Set default state
-        user.setDeleted(false);
+        // 3. Get the current date and time
+        LocalDateTime loginTime = LocalDateTime.now();
 
-        // 4. Save the fully constructed user
+        // 4. Manually set the fields that were ignored by the mapper
+        user.setCountry(country);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setActive(true);
+        user.setDeleted(false);
+        user.setLastLoginDate(loginTime);
+
+        // 5. Save the fully constructed user
         userRepository.save(user);
 
-        // 5. Generate and return the JWT
+        // 6. Generate and return the JWT
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }

@@ -7,5 +7,4 @@ import com.budgetwise.api.auth.dto.RegisterRequest;
 public interface AuthService {
     AuthenticationResponse login(AuthenticationRequest request);
     AuthenticationResponse register(RegisterRequest request);
-
 }

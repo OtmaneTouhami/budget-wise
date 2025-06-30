@@ -26,6 +26,6 @@ public class RegisterRequest {
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
-    @NotNull(message = "Country ID is required")
+    @NotNull(message = "Country is required")
     private Long countryId;
 }
