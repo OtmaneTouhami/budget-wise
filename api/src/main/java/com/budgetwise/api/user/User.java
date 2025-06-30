@@ -69,6 +69,10 @@ public class User implements UserDetails {
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean DEFAULT false")
     private boolean isDeleted = false;
 
+    @Lob
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     private LocalDateTime lastLoginDate;
     private LocalDateTime lastPasswordResetDate;
 

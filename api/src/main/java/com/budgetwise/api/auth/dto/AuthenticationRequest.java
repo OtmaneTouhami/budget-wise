@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 @Builder
 public class AuthenticationRequest {
-    @NotBlank(message = "Username is required")
-    private String username;
+    @NotBlank(message = "Identifier is required")
+    private String loginIdentifier;
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
