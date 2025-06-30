@@ -58,8 +58,8 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Builder.Default
-    @Column(name = "date_format", length = 10, columnDefinition = "VARCHAR(10) DEFAULT 'YYYY-MM-DD'")
-    private String dateFormat = "YYYY-MM-DD";
+    @Column(name = "date_format", length = 10, columnDefinition = "VARCHAR(10) DEFAULT 'yyyy-MM-dd'")
+    private String dateFormat = "yyyy-MM-dd" ;
 
     @Builder.Default
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean DEFAULT true")
