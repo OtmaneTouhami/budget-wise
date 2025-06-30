@@ -35,4 +35,6 @@ build/
 ### Environments Variables ###
 .env
 
+### My Files
 keeper
+handleEveryException.md

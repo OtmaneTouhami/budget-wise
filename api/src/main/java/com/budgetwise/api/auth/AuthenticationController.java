@@ -3,6 +3,7 @@ package com.budgetwise.api.auth;
 import com.budgetwise.api.auth.dto.AuthenticationRequest;
 import com.budgetwise.api.auth.dto.AuthenticationResponse;
 import com.budgetwise.api.auth.dto.RegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AuthenticationController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
