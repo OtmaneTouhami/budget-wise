@@ -2,6 +2,7 @@ package com.budgetwise.api.recurringtransaction;
 
 
 import com.budgetwise.api.category.Category;
+import com.budgetwise.api.recurringtransaction.enums.ScheduleType;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.user.User;
 import jakarta.persistence.*;
