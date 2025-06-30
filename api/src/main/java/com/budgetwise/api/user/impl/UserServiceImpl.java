@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -62,6 +64,12 @@ public class UserServiceImpl implements UserService {
 
         // 3. Update the password
         currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        // 4. Set the password update timestamp
+        LocalDateTime changePasswordTime = LocalDateTime.now();
+        currentUser.setLastPasswordResetDate(changePasswordTime);
+
+        // 5. Save the changes
         userRepository.save(currentUser);
     }
 
