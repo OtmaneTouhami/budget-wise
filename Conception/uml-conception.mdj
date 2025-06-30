@@ -49,6 +49,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1056,
+											"top": -32,
 											"height": 13
 										},
 										{
@@ -60,7 +61,7 @@
 											"font": "Arial;13;1",
 											"parentStyle": true,
 											"left": 877,
-											"top": 215,
+											"top": 199,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "User"
@@ -75,6 +76,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1056,
+											"top": -32,
 											"width": 70.7763671875,
 											"height": 13,
 											"text": "(from Class)"
@@ -89,6 +91,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1056,
+											"top": -32,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
@@ -96,7 +99,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 872,
-									"top": 208,
+									"top": 192,
 									"width": 225.08740234375,
 									"height": 25,
 									"stereotypeLabel": {
@@ -134,7 +137,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 238,
+											"top": 222,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-email: String",
@@ -152,7 +155,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 253,
+											"top": 237,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-username: String",
@@ -170,7 +173,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 268,
+											"top": 252,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-firstName: String",
@@ -188,7 +191,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 283,
+											"top": 267,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-lastName: String",
@@ -206,7 +209,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 298,
+											"top": 282,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-phoneNumber: String",
@@ -224,7 +227,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 313,
+											"top": 297,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-password: String",
@@ -243,7 +246,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1573,
-											"top": 424,
+											"top": 392,
 											"width": 95,
 											"height": 13,
 											"text": "-hasSalary",
@@ -262,7 +265,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1573,
-											"top": 439,
+											"top": 407,
 											"width": 95,
 											"height": 13,
 											"text": "-salary",
@@ -281,7 +284,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 1573,
-											"top": 454,
+											"top": 422,
 											"width": 95,
 											"height": 13,
 											"text": "-salaryDate",
@@ -300,7 +303,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 328,
+											"top": 296,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-currency: String",
@@ -318,7 +321,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 328,
+											"top": 312,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-dateFormat: String",
@@ -336,7 +339,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 343,
+											"top": 327,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-isActive: Boolean",
@@ -354,10 +357,28 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 358,
+											"top": 342,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-isDeleted: Boolean",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGXwazVQSA/x/Q=",
+											"_parent": {
+												"$ref": "AAAAAAGXrJEQr1Hl5hQ="
+											},
+											"model": {
+												"$ref": "AAAAAAGXwazVBSA8A1k="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 877,
+											"top": 357,
+											"width": 215.08740234375,
+											"height": 13,
+											"text": "-refreshToken: String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -372,7 +393,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 373,
+											"top": 372,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-lastLoginDate: Timestamp",
@@ -390,7 +411,7 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 877,
-											"top": 388,
+											"top": 387,
 											"width": 215.08740234375,
 											"height": 13,
 											"text": "-lastPasswordResetDate: Timestamp",
@@ -400,9 +421,9 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 872,
-									"top": 233,
+									"top": 217,
 									"width": 225.08740234375,
-									"height": 173
+									"height": 188
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -416,7 +437,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 872,
-									"top": 406,
+									"top": 405,
 									"width": 225.08740234375,
 									"height": 10
 								},
@@ -433,6 +454,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 528,
+									"top": -16,
 									"width": 10,
 									"height": 10
 								},
@@ -449,6 +471,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 528,
+									"top": -16,
 									"width": 10,
 									"height": 10
 								}
@@ -457,9 +480,9 @@
 							"parentStyle": false,
 							"containerChangeable": true,
 							"left": 872,
-							"top": 208,
+							"top": 192,
 							"width": 224.08740234375,
-							"height": 208,
+							"height": 223,
 							"nameCompartment": {
 								"$ref": "AAAAAAGXrJEQrVHgEC8="
 							},
@@ -1907,7 +1930,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 937,
-									"top": 176,
+									"top": 160,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -1929,7 +1952,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 923,
-									"top": 173,
+									"top": 157,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -1950,7 +1973,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 961,
-									"top": 180,
+									"top": 164,
 									"width": 7.22998046875,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -2064,7 +2087,7 @@
 							"tail": {
 								"$ref": "AAAAAAGXrJEQrFHfrFc="
 							},
-							"points": "952:208;952:176;352:176;352:138",
+							"points": "952:192;952:176;352:176;352:138",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXrOKbNVQDc/8="
@@ -4929,7 +4952,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 951,
-									"top": 435,
+									"top": 434,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -4951,7 +4974,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 964,
-									"top": 438,
+									"top": 437,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -4972,7 +4995,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 920,
-									"top": 431,
+									"top": 430,
 									"width": 7.22998046875,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -5086,7 +5109,7 @@
 							"tail": {
 								"$ref": "AAAAAAGXrJEQrFHfrFc="
 							},
-							"points": "936:416;936:512;853:512",
+							"points": "936:415;936:512;853:512",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXrU8Yc1oiJdg="
@@ -5848,7 +5871,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 977,
-									"top": 435,
+									"top": 434,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -5869,7 +5892,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 963,
-									"top": 438,
+									"top": 437,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -5889,7 +5912,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 1001,
-									"top": 431,
+									"top": 430,
 									"width": 7.22998046875,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -5938,7 +5961,7 @@
 							"tail": {
 								"$ref": "AAAAAAGXrPGto6ZwKio="
 							},
-							"points": "558:600;992:600;992:416",
+							"points": "558:600;992:600;992:415",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXrU82V2ppCrs="
@@ -7196,6 +7219,16 @@
 							"name": "isDeleted",
 							"visibility": "private",
 							"type": "Boolean"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGXwazVBSA8A1k=",
+							"_parent": {
+								"$ref": "AAAAAAGXrJEQqVHd3NM="
+							},
+							"name": "refreshToken",
+							"visibility": "private",
+							"type": "String"
 						},
 						{
 							"_type": "UMLAttribute",
