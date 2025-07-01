@@ -45,6 +45,11 @@ aws:
     bucket-name: ${AWS_S3_BUCKET_NAME}
   region: ${AWS_REGION}
 
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  trial-number: ${TWILIO_TRIAL_NUMBER}
+
 budget:
   alert:
     threshold: 0.90
