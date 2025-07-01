@@ -3,6 +3,7 @@ package com.budgetwise.api.transactiontemplate.impl;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.category.CategoryRepository;
 import com.budgetwise.api.exception.ResourceNotFoundException;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.transactiontemplate.TransactionTemplate;
 import com.budgetwise.api.transactiontemplate.TransactionTemplateRepository;
 import com.budgetwise.api.transactiontemplate.TransactionTemplateService;
@@ -10,10 +11,8 @@ import com.budgetwise.api.transactiontemplate.dto.TransactionTemplateRequest;
 import com.budgetwise.api.transactiontemplate.dto.TransactionTemplateResponse;
 import com.budgetwise.api.transactiontemplate.mapper.TransactionTemplateMapper;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +25,13 @@ public class TransactionTemplateServiceImpl implements TransactionTemplateServic
 
     private final TransactionTemplateRepository templateRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
     private final TransactionTemplateMapper templateMapper;
 
     @Override
     @Transactional
     public TransactionTemplateResponse createTemplate(TransactionTemplateRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
@@ -56,7 +55,7 @@ public class TransactionTemplateServiceImpl implements TransactionTemplateServic
 
     @Override
     public List<TransactionTemplateResponse> getAllUserTemplates() {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         List<TransactionTemplate> templates = templateRepository.findByUserOrderByNameAsc(currentUser);
         return templateMapper.toDtoList(templates);
     }
@@ -74,7 +73,7 @@ public class TransactionTemplateServiceImpl implements TransactionTemplateServic
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
-        if (!category.getUser().getId().equals(getCurrentUser().getId())) {
+        if (!category.getUser().getId().equals(securityUtils.getCurrentUser().getId())) {
             throw new AccessDeniedException("You do not have permission to use this category");
         }
 
@@ -94,14 +93,8 @@ public class TransactionTemplateServiceImpl implements TransactionTemplateServic
         templateRepository.delete(template);
     }
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
-
     private TransactionTemplate findTemplateAndVerifyOwnership(UUID templateId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         TransactionTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new ResourceNotFoundException("Template not found with id: " + templateId));
         if (!template.getUser().getId().equals(currentUser.getId())) {

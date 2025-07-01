@@ -4,6 +4,7 @@ import com.budgetwise.api.budget.BudgetAlertService;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.category.CategoryRepository;
 import com.budgetwise.api.exception.ResourceNotFoundException;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transaction.TransactionRepository;
 import com.budgetwise.api.transaction.TransactionService;
@@ -14,13 +15,11 @@ import com.budgetwise.api.transaction.mapper.TransactionMapper;
 import com.budgetwise.api.transactiontemplate.TransactionTemplate;
 import com.budgetwise.api.transactiontemplate.TransactionTemplateRepository;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
     private final TransactionMapper transactionMapper;
     private final TransactionTemplateRepository templateRepository;
     private final BudgetAlertService budgetAlertService;
@@ -47,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), currentUser);
 
         Transaction transaction = Transaction.builder()
@@ -73,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
             UUID templateId,
             CreateTransactionFromTemplateRequest request
     ) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         TransactionTemplate template = findTemplateAndVerifyOwnership(templateId, currentUser);
 
         BigDecimal transactionAmount = getTransactionAmount(request, template);
@@ -94,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionResponse> getTransactions(LocalDate startDate, LocalDate endDate) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = (endDate != null) ? endDate.plusDays(1).atStartOfDay() : null;
 
@@ -117,7 +116,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionResponse updateTransaction(UUID id, TransactionRequest request) {
         Transaction transaction = findTransactionAndVerifyOwnership(id);
-        Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), getCurrentUser());
+        Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), securityUtils.getCurrentUser());
 
         transaction.setAmount(request.getAmount());
         transaction.setDescription(request.getDescription());
@@ -162,14 +161,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
-
     private Transaction findTransactionAndVerifyOwnership(UUID transactionId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + transactionId));
         if (!transaction.getUser().getId().equals(currentUser.getId())) {

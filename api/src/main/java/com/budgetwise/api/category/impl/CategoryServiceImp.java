@@ -8,12 +8,11 @@ import com.budgetwise.api.category.dto.CategoryResponse;
 import com.budgetwise.api.category.enums.CategoryType;
 import com.budgetwise.api.category.mapper.CategoryMapper;
 import com.budgetwise.api.exception.ResourceNotFoundException;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.transaction.TransactionRepository;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +23,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryServiceImp implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final CategoryMapper categoryMapper;
     private final TransactionRepository transactionRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Category category = Category.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -45,7 +44,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public List<CategoryResponse> getAllUserCategories() {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         List<Category> categories = categoryRepository.findByUserOrderByCreatedAtDesc(currentUser);
         return categoryMapper.toDtoList(categories);
     }
@@ -72,21 +71,16 @@ public class CategoryServiceImp implements CategoryService {
     @Transactional
     public void deleteCategory(UUID id) {
         Category category = findCategoryAndVerifyOwnership(id);
-        // Business Rule: Prevent deletion if category is linked to transactions
+        // Business Rule: Prevent deletion if a category is linked to transactions
         if (transactionRepository.existsByCategory(category)) {
             throw new IllegalStateException("Cannot delete category with existing transactions.");
         }
         categoryRepository.delete(category);
     }
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
 
     private Category findCategoryAndVerifyOwnership(UUID categoryId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
         if (!category.getUser().getId().equals(currentUser.getId())) {

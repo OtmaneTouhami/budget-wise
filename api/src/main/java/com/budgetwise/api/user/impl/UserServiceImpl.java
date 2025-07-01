@@ -1,17 +1,15 @@
 package com.budgetwise.api.user.impl;
 
-import com.budgetwise.api.exception.ResourceNotFoundException;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.user.User;
 import com.budgetwise.api.user.UserRepository;
 import com.budgetwise.api.user.UserService;
 import com.budgetwise.api.user.dto.ChangePasswordRequest;
 import com.budgetwise.api.user.dto.UpdateProfileRequest;
 import com.budgetwise.api.user.dto.UserProfileResponse;
-import com.budgetwise.api.user.enums.DateFormat;
 import com.budgetwise.api.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,20 +19,22 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     public UserProfileResponse getUserProfile() {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         return userMapper.toUserProfileResponse(currentUser);
     }
 
     @Override
     @Transactional
     public UserProfileResponse updateUserProfile(UpdateProfileRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
 
         // Update fields from DTO
         currentUser.setFirstName(request.getFirstName());
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
 
         // 1. Check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), currentUser.getPassword())) {
@@ -76,19 +76,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUserProfile() {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         currentUser.setActive(false);
         currentUser.setDeleted(true);
         currentUser.setRefreshToken(null);
         userRepository.save(currentUser);
     }
 
-    /**
-     * Helper method to get the currently authenticated user from the security context.
-     */
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
 }

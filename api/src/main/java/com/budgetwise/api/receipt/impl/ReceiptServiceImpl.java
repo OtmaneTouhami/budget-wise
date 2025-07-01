@@ -7,13 +7,12 @@ import com.budgetwise.api.receipt.ReceiptRepository;
 import com.budgetwise.api.receipt.ReceiptService;
 import com.budgetwise.api.receipt.dto.ReceiptResponse;
 import com.budgetwise.api.receipt.mapper.ReceiptMapper;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transaction.TransactionRepository;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,14 +28,14 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     private final ReceiptRepository receiptRepository;
     private final TransactionRepository transactionRepository;
-    private final UserRepository userRepository;
     private final S3Service s3Service;
     private final ReceiptMapper receiptMapper;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional
     public ReceiptResponse attachReceiptToTransaction(UUID transactionId, MultipartFile file) throws IOException {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Transaction transaction = findTransactionAndVerifyOwnership(transactionId, currentUser);
 
         // Generate a unique key for the S3 object
@@ -73,14 +72,14 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     @Override
     public List<ReceiptResponse> getReceiptsForTransaction(UUID transactionId) {
-        Transaction transaction = findTransactionAndVerifyOwnership(transactionId, getCurrentUser());
+        Transaction transaction = findTransactionAndVerifyOwnership(transactionId, securityUtils.getCurrentUser());
         return receiptMapper.toDtoList(transaction.getReceipts());
     }
 
     @Override
     @Transactional
     public void deleteReceipt(UUID receiptId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Receipt receipt = receiptRepository.findById(receiptId)
                 .orElseThrow(() -> new ResourceNotFoundException("Receipt not found"));
 
@@ -96,11 +95,6 @@ public class ReceiptServiceImpl implements ReceiptService {
         receiptRepository.delete(receipt);
     }
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
 
     private Transaction findTransactionAndVerifyOwnership(UUID transactionId, User user) {
         Transaction transaction = transactionRepository.findById(transactionId)

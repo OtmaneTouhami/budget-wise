@@ -9,11 +9,10 @@ import com.budgetwise.api.budget.mapper.BudgetMapper;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.category.CategoryRepository;
 import com.budgetwise.api.exception.ResourceNotFoundException;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +27,13 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetRepository budgetRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
     private final BudgetMapper budgetMapper;
 
     @Override
     @Transactional
     public BudgetResponse createBudget(BudgetRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
@@ -61,7 +60,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public List<BudgetResponse> getBudgets(int year, int month) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
@@ -95,14 +94,8 @@ public class BudgetServiceImpl implements BudgetService {
         budgetRepository.delete(budget);
     }
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
-
     private Budget findBudgetAndVerifyOwnership(UUID budgetId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Budget budget = budgetRepository.findById(budgetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Budget not found with id: " + budgetId));
         if (!budget.getUser().getId().equals(currentUser.getId())) {

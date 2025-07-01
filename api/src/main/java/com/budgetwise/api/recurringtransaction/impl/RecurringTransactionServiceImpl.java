@@ -11,11 +11,10 @@ import com.budgetwise.api.recurringtransaction.dto.RecurringTransactionResponse;
 import com.budgetwise.api.recurringtransaction.dto.UpdateRecurringStatusRequest;
 import com.budgetwise.api.recurringtransaction.enums.ScheduleType;
 import com.budgetwise.api.recurringtransaction.mapper.RecurringTransactionMapper;
+import com.budgetwise.api.security.SecurityUtils;
 import com.budgetwise.api.user.User;
-import com.budgetwise.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +27,13 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
 
     private final RecurringTransactionRepository recurringRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final RecurringTransactionMapper recurringMapper;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional
     public RecurringTransactionResponse createRecurringTransaction(RecurringTransactionRequest request) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), currentUser);
 
         RecurringTransaction recurring = RecurringTransaction.builder()
@@ -56,7 +55,7 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
 
     @Override
     public List<RecurringTransactionResponse> getAllUserRecurringTransactions() {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         return recurringMapper.toDtoList(recurringRepository.findByUserOrderByNextExecutionDateAsc(currentUser));
     }
 
@@ -69,7 +68,7 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
     @Transactional
     public RecurringTransactionResponse updateRecurringTransaction(UUID id, RecurringTransactionRequest request) {
         RecurringTransaction recurring = findRuleAndVerifyOwnership(id);
-        Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), getCurrentUser());
+        Category category = findCategoryAndVerifyOwnership(request.getCategoryId(), securityUtils.getCurrentUser());
 
         recurring.setName(request.getName());
         recurring.setAmount(request.getAmount());
@@ -103,14 +102,8 @@ public class RecurringTransactionServiceImpl implements RecurringTransactionServ
         recurringRepository.delete(recurring);
     }
 
-    private User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
-    }
-
     private RecurringTransaction findRuleAndVerifyOwnership(UUID ruleId) {
-        User currentUser = getCurrentUser();
+        User currentUser = securityUtils.getCurrentUser();
         RecurringTransaction recurring = recurringRepository.findById(ruleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurring transaction not found with id: " + ruleId));
         if (!recurring.getUser().getId().equals(currentUser.getId())) {
