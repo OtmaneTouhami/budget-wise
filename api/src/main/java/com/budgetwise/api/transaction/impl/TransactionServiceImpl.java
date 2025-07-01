@@ -1,5 +1,6 @@
 package com.budgetwise.api.transaction.impl;
 
+import com.budgetwise.api.budget.BudgetAlertService;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.category.CategoryRepository;
 import com.budgetwise.api.exception.ResourceNotFoundException;
@@ -40,6 +41,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final UserRepository userRepository;
     private final TransactionMapper transactionMapper;
     private final TransactionTemplateRepository templateRepository;
+    private final BudgetAlertService budgetAlertService;
+
 
     @Override
     @Transactional
@@ -57,6 +60,10 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
 
         Transaction saved = transactionRepository.save(transaction);
+
+        // After saving, check if this transaction triggers a budget alert.
+        budgetAlertService.checkBudgetAfterTransaction(saved);
+
         return transactionMapper.toDto(saved);
     }
 
