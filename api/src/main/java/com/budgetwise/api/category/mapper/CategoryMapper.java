@@ -1,7 +1,6 @@
 package com.budgetwise.api.category.mapper;
 
 import com.budgetwise.api.category.Category;
-import com.budgetwise.api.category.dto.CategoryRequest;
 import com.budgetwise.api.category.dto.CategoryResponse;
 import org.mapstruct.*;
 

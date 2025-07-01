@@ -1,10 +1,11 @@
-package com.budgetwise.api.global.impl;
+package com.budgetwise.api.global.country.impl;
 
-import com.budgetwise.api.global.Country;
-import com.budgetwise.api.global.CountryDataSeeder;
-import com.budgetwise.api.global.CountryRepository;
-import com.budgetwise.api.global.dto.CountryApiResponse;
-import com.budgetwise.api.global.dto.Currency;
+
+import com.budgetwise.api.global.country.Country;
+import com.budgetwise.api.global.country.CountryDataSeeder;
+import com.budgetwise.api.global.country.CountryRepository;
+import com.budgetwise.api.global.country.dto.CountryApiResponse;
+import com.budgetwise.api.global.country.dto.Currency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

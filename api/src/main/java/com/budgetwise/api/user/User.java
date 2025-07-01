@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.budgetwise.api.budget.Budget;
 import com.budgetwise.api.category.Category;
-import com.budgetwise.api.global.Country;
+import com.budgetwise.api.global.country.Country;
 import com.budgetwise.api.recurringtransaction.RecurringTransaction;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transactiontemplate.TransactionTemplate;

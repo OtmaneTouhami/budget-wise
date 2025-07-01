@@ -1,4 +1,4 @@
-package com.budgetwise.api.global;
+package com.budgetwise.api.global.country;
 
 import jakarta.persistence.*;
 import lombok.*;

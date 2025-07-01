@@ -1,6 +1,6 @@
 package com.budgetwise.api.user.dto;
 
-import com.budgetwise.api.global.dto.CountryDto;
+import com.budgetwise.api.global.country.dto.CountryDto;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,7 +1,8 @@
-package com.budgetwise.api.global.mapper;
+package com.budgetwise.api.global.country.mapper;
 
-import com.budgetwise.api.global.Country;
-import com.budgetwise.api.global.dto.CountryDto;
+
+import com.budgetwise.api.global.country.Country;
+import com.budgetwise.api.global.country.dto.CountryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

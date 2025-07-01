@@ -12,6 +12,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface RecurringTransactionMapper {
 
+    @Mapping(target = "isActive", source = "active")
     @Mapping(target = "scheduleType", source = "scheduleType.name")
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")

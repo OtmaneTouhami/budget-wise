@@ -1,14 +1,13 @@
-package com.budgetwise.api.global.dto;
+package com.budgetwise.api.global.country.dto;
 
+import com.budgetwise.api.global.country.Country;
 import lombok.Value;
 
-import java.io.Serializable;
-
 /**
- * DTO for {@link com.budgetwise.api.global.Country}
+ * DTO for {@link Country}
  */
 @Value
-public class CountryDto implements Serializable {
+public class CountryDto {
     Long id;
     String name;
     String alpha2Code;
