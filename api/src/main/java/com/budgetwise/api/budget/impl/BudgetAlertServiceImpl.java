@@ -3,16 +3,18 @@ package com.budgetwise.api.budget.impl;
 import com.budgetwise.api.budget.Budget;
 import com.budgetwise.api.budget.BudgetAlertService;
 import com.budgetwise.api.budget.BudgetRepository;
+import com.budgetwise.api.notification.EmailService;
 import com.budgetwise.api.notification.Notification;
 import com.budgetwise.api.notification.NotificationRepository;
-import com.budgetwise.api.notification.SmsService;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transaction.TransactionRepository;
 import com.budgetwise.api.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.YearMonth;
@@ -20,12 +22,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BudgetAlertServiceImpl implements BudgetAlertService {
 
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
     private final NotificationRepository notificationRepository;
-    private final SmsService smsService;
+    private final EmailService emailService;
 
     @Value("${budget.alert.threshold}")
     private double alertThreshold;
@@ -82,14 +85,14 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
                 .build();
         notificationRepository.save(appNotification);
 
-        // 2. Send SMS Notification
-        if (budget.getUser().getPhoneNumber() != null && !budget.getUser().getPhoneNumber().isBlank()) {
-            User currentUser = budget.getUser();
-            String assembledPhoneNumber = "+"
-                    + currentUser.getCountry().getCallingCode()
-                    + currentUser.getPhoneNumber();
+        // 2. Send Email Notification
+        User user = budget.getUser();
+        String subject = "BudgetWise Alert: " + budget.getCategory().getName();
 
-            smsService.sendSms(assembledPhoneNumber, message);
+        try {
+            emailService.sendEmail(user.getEmail(), subject, message);
+        } catch (IOException e) {
+            log.error("Failed to send budget alert email for user {}", user.getUsername(), e);
         }
     }
 }

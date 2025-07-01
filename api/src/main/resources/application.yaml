@@ -45,6 +45,10 @@ aws:
     bucket-name: ${AWS_S3_BUCKET_NAME}
   region: ${AWS_REGION}
 
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  from-email: ${FROM_EMAIL}
+
 twilio:
   account-sid: ${TWILIO_ACCOUNT_SID}
   auth-token: ${TWILIO_AUTH_TOKEN}
