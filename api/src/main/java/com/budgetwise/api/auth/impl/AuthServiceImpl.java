@@ -102,6 +102,9 @@ public class AuthServiceImpl implements AuthService {
         // 5. Save the new user to the database
         userRepository.save(user);
 
+        // 6. Send the verification email
+        sendVerificationEmail(user.getEmail(), verificationToken);
+
         return AuthenticationResponse.builder().build();
     }
 
