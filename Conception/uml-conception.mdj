@@ -4498,6 +4498,24 @@
 											"height": 13,
 											"text": "+MONTHLY",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGXxdVdBH6Ezs4=",
+											"_parent": {
+												"$ref": "AAAAAAGXrU2ncCsexhA="
+											},
+											"model": {
+												"$ref": "AAAAAAGXxdVctn5s8Pk="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 85,
+											"top": 624,
+											"width": 88.17236328125,
+											"height": 13,
+											"text": "+YEARLY",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
@@ -4505,7 +4523,7 @@
 									"left": 80,
 									"top": 574,
 									"width": 98.17236328125,
-									"height": 53
+									"height": 68
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -4519,7 +4537,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 80,
-									"top": 627,
+									"top": 642,
 									"width": 98.17236328125,
 									"height": 10
 								},
@@ -4564,7 +4582,7 @@
 							"left": 80,
 							"top": 536,
 							"width": 97.17236328125,
-							"height": 101,
+							"height": 116,
 							"nameCompartment": {
 								"$ref": "AAAAAAGXrU2ncCsZTwk="
 							},
@@ -6897,6 +6915,20 @@
 							"headQualifiersCompartment": {
 								"$ref": "AAAAAAGXsvTm6/641gg="
 							}
+						},
+						{
+							"_type": "UMLTextView",
+							"_id": "AAAAAAGXxdWBUYC+2cE=",
+							"_parent": {
+								"$ref": "AAAAAAGXrJAwKVHX+Oc="
+							},
+							"font": "Arial;13;0",
+							"parentStyle": false,
+							"left": 199,
+							"top": 621,
+							"width": 100,
+							"height": 25,
+							"text": "Text"
 						}
 					]
 				},
@@ -7971,6 +8003,14 @@
 							},
 							"name": "MONTHLY",
 							"type": ""
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGXxdVctn5s8Pk=",
+							"_parent": {
+								"$ref": "AAAAAAGXrU2ncCsWK7c="
+							},
+							"name": "YEARLY"
 						}
 					]
 				},
