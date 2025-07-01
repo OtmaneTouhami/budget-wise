@@ -46,6 +46,13 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Override
+    @Transactional
+    public void markAllAsRead() {
+        User currentUser = getCurrentUser();
+        notificationRepository.markAllAsReadForUser(currentUser);
+    }
+
     // I need to move getCurrentUser() to a shared utility class later
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

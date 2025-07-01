@@ -9,4 +9,6 @@ public interface NotificationService {
     List<NotificationResponse> getMyNotifications();
 
     void markNotificationAsRead(UUID notificationId);
+
+    void markAllAsRead();
 }
