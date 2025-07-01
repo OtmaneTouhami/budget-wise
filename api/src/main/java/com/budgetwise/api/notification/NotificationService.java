@@ -1,4 +1,12 @@
-package com.budgetwise.api.notification.mapper;
+package com.budgetwise.api.notification;
 
-public class NotificationService {
+import com.budgetwise.api.notification.dto.NotificationResponse;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface NotificationService {
+    List<NotificationResponse> getMyNotifications();
+
+    void markNotificationAsRead(UUID notificationId);
 }

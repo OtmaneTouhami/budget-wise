@@ -1,5 +1,6 @@
 package com.budgetwise.api.transaction;
 
+import com.budgetwise.api.transaction.dto.CreateTransactionFromTemplateRequest;
 import com.budgetwise.api.transaction.dto.TransactionRequest;
 import com.budgetwise.api.transaction.dto.TransactionResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,5 +59,21 @@ public class TransactionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) throws IOException {
         transactionService.exportTransactionsToCsv(response, startDate, endDate);
+    }
+
+    @PostMapping("/from-template/{templateId}")
+    public ResponseEntity<TransactionResponse> createTransactionFromTemplate(
+            @PathVariable UUID templateId,
+            @Valid @RequestBody(required = false) CreateTransactionFromTemplateRequest request
+    ) {
+        // If the body is null (for one-click templates), create a new empty object
+        CreateTransactionFromTemplateRequest finalRequest = (request == null)
+                ? new CreateTransactionFromTemplateRequest()
+                : request;
+
+        return new ResponseEntity<>(
+                transactionService.createTransactionFromTemplate(templateId, finalRequest),
+                HttpStatus.CREATED
+        );
     }
 }

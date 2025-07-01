@@ -6,9 +6,12 @@ import com.budgetwise.api.exception.ResourceNotFoundException;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transaction.TransactionRepository;
 import com.budgetwise.api.transaction.TransactionService;
+import com.budgetwise.api.transaction.dto.CreateTransactionFromTemplateRequest;
 import com.budgetwise.api.transaction.dto.TransactionRequest;
 import com.budgetwise.api.transaction.dto.TransactionResponse;
 import com.budgetwise.api.transaction.mapper.TransactionMapper;
+import com.budgetwise.api.transactiontemplate.TransactionTemplate;
+import com.budgetwise.api.transactiontemplate.TransactionTemplateRepository;
 import com.budgetwise.api.user.User;
 import com.budgetwise.api.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final TransactionMapper transactionMapper;
+    private final TransactionTemplateRepository templateRepository;
 
     @Override
     @Transactional
@@ -52,6 +57,31 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
 
         Transaction saved = transactionRepository.save(transaction);
+        return transactionMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public TransactionResponse createTransactionFromTemplate(
+            UUID templateId,
+            CreateTransactionFromTemplateRequest request
+    ) {
+        User currentUser = getCurrentUser();
+        TransactionTemplate template = findTemplateAndVerifyOwnership(templateId, currentUser);
+
+        BigDecimal transactionAmount = getTransactionAmount(request, template);
+
+        Transaction transaction = Transaction.builder()
+                .amount(transactionAmount)
+                .description(template.getDescription())
+                .transactionDate(LocalDateTime.now())
+                .category(template.getCategory())
+                .user(currentUser)
+                .isCreatedAutomatically(false)
+                .build();
+
+        Transaction saved = transactionRepository.save(transaction);
+
         return transactionMapper.toDto(saved);
     }
 
@@ -148,5 +178,32 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AccessDeniedException("You do not have permission to use this category");
         }
         return category;
+    }
+
+    private TransactionTemplate findTemplateAndVerifyOwnership(UUID templateId, User user) {
+        TransactionTemplate template = templateRepository.findById(templateId)
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found with id: " + templateId));
+        if (!template.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You do not have permission to use this template");
+        }
+        return template;
+    }
+
+    private static BigDecimal getTransactionAmount(
+            CreateTransactionFromTemplateRequest request,
+            TransactionTemplate template
+    ) {
+        BigDecimal transactionAmount;
+
+        if (template.getAmount() != null) {
+            transactionAmount = template.getAmount();
+        } else if (request.getAmount() != null) {
+            transactionAmount = request.getAmount();
+        } else {
+            throw new IllegalArgumentException(
+                    "Amount is required as this template does not have a pre-defined amount."
+            );
+        }
+        return transactionAmount;
     }
 }
