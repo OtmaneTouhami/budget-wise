@@ -5,8 +5,10 @@ import com.budgetwise.api.budget.BudgetAlertService;
 import com.budgetwise.api.budget.BudgetRepository;
 import com.budgetwise.api.notification.Notification;
 import com.budgetwise.api.notification.NotificationRepository;
+import com.budgetwise.api.notification.SmsService;
 import com.budgetwise.api.transaction.Transaction;
 import com.budgetwise.api.transaction.TransactionRepository;
+import com.budgetwise.api.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
     private final NotificationRepository notificationRepository;
-    // We will add the Twilio service here later
+    private final SmsService smsService;
 
     @Value("${budget.alert.threshold}")
     private double alertThreshold;
@@ -80,7 +82,14 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
                 .build();
         notificationRepository.save(appNotification);
 
-        // 2. Send SMS Notification (We will implement this next)
-        // smsService.sendSms(budget.getUser().getPhoneNumber(), message);
+        // 2. Send SMS Notification
+        if (budget.getUser().getPhoneNumber() != null && !budget.getUser().getPhoneNumber().isBlank()) {
+            User currentUser = budget.getUser();
+            String assembledPhoneNumber = "+"
+                    + currentUser.getCountry().getCallingCode()
+                    + currentUser.getPhoneNumber();
+
+            smsService.sendSms(assembledPhoneNumber, message);
+        }
     }
 }
