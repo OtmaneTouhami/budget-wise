@@ -1,8 +1,6 @@
 package com.budgetwise.api.auth;
 
-import com.budgetwise.api.auth.dto.AuthenticationRequest;
-import com.budgetwise.api.auth.dto.AuthenticationResponse;
-import com.budgetwise.api.auth.dto.RegisterRequest;
+import com.budgetwise.api.auth.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,17 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<AuthenticationResponse> verifyAccount(@Valid @RequestBody VerificationRequest request) {
+        return ResponseEntity.ok(authService.verifyAccount(request));
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
+        authService.resendVerificationToken(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")

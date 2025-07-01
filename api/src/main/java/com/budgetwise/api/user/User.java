@@ -62,8 +62,8 @@ public class User implements UserDetails {
     private String dateFormat = "yyyy-MM-dd" ;
 
     @Builder.Default
-    @Column(name = "is_active", nullable = false, columnDefinition = "boolean DEFAULT true")
-    private boolean isActive = true;
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean DEFAULT false")
+    private boolean isActive = false;
 
     @Builder.Default
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean DEFAULT false")
@@ -75,6 +75,12 @@ public class User implements UserDetails {
 
     private LocalDateTime lastLoginDate;
     private LocalDateTime lastPasswordResetDate;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry")
+    private LocalDateTime verificationTokenExpiry;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Category> categories;
