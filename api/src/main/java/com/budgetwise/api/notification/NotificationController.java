@@ -4,6 +4,7 @@ import com.budgetwise.api.notification.dto.NotificationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,12 @@ public class NotificationController {
     @PostMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable UUID id) {
         notificationService.markNotificationAsRead(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/read-all")
+    public ResponseEntity<Void> markAllAsRead() {
+        notificationService.markAllAsRead();
         return ResponseEntity.noContent().build();
     }
 }
