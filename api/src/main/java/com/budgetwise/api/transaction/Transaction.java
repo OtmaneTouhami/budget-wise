@@ -13,6 +13,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,8 +59,14 @@ public class Transaction {
     @JoinColumn(name = "recurring_transaction_id")
     private RecurringTransaction recurringTransaction;
 
-    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    @OneToMany(
+            mappedBy = "transaction",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @Builder.Default
+    private List<Receipt> receipts = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -68,5 +75,11 @@ public class Transaction {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    // HELPER METHOD
+    public void addReceipt(Receipt receipt) {
+        receipts.add(receipt);
+        receipt.setTransaction(this);
+    }
 
 }
