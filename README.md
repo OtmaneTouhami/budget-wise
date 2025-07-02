@@ -57,6 +57,9 @@ This project represents the culmination of the ALX Software Engineering Webstack
 - **📱 SMS Notifications**: Real-time alerts via Twilio integration
 - **📈 Trend Analysis**: Historical spending patterns and insights
 - **🎨 Responsive Design**: Seamless experience across all devices
+- **✉️ Email Notifications**: Account verification and notifications via SendGrid.
+- **🔁 Recurring Transactions**: Automate scheduling of regular income and expenses.
+- **📋 Transaction Templates**: Create transactions from predefined templates.
 
 ---
 
@@ -65,10 +68,12 @@ This project represents the culmination of the ALX Software Engineering Webstack
 ### Backend
 - **Framework**: Spring Boot 3.x
 - **Security**: Spring Security + JWT Authentication
-- **Database**: Spring Data JPA + Hibernate + MySQL
-- **Documentation**: Swagger/OpenAPI
-- **File Storage**: Local/AWS S3 for receipt uploads
-- **Notifications**: Twilio API for SMS alerts
+- **Database**: Spring Data JPA + Hibernate + MariaDB
+- **API Documentation**: SpringDoc (Swagger/OpenAPI)
+- **File Storage**: AWS S3 for receipt uploads
+- **Notifications**: Twilio API for SMS alerts, SendGrid for email
+- **DTO Mapping**: MapStruct
+- **Utilities**: Lombok, Spring Dotenv
 
 ### Frontend
 - **Framework**: React 19
@@ -120,7 +125,7 @@ Our application follows a clean, layered architecture pattern:
 ### Prerequisites
 - **Java 17+**
 - **Node.js 16+**
-- **MySQL 8.0**
+- **MariaDB 10.5+**
 - **Maven 3.6+**
 
 ### Installation
@@ -141,7 +146,7 @@ Our application follows a clean, layered architecture pattern:
 
 3. **Frontend Setup**
    ```bash
-   cd frontend
+   cd ../frontend
    npm install
    npm run dev
    ```
@@ -153,51 +158,111 @@ Our application follows a clean, layered architecture pattern:
    ```
 
 ### Environment Variables
-Create `.env` files in both backend and frontend directories:
+Create a `.env` file in the `api` backend directory with the following variables:
 
-**Backend (.env)**
+**Backend (`api/.env`)**
 ```
-DB_URL=jdbc:mysql://localhost:3306/budgetwise
+# Database Configuration
+DB_URL=jdbc:mariadb://localhost:3306/budgetwise
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
-JWT_SECRET=your_jwt_secret_key
-TWILIO_ACCOUNT_SID=your_twilio_sid
-TWILIO_AUTH_TOKEN=your_twilio_token
+
+# JWT Configuration
+JWT_SECRET=your_super_secret_and_long_jwt_key
+JWT_EXPIRATION_MS=86400000 # 24 hours
+JWT_REFRESH_EXPIRATION_MS=604800000 # 7 days
+
+# AWS S3 Configuration (for file storage)
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_S3_BUCKET_NAME=your_s3_bucket_name
+AWS_REGION=your_aws_region
+
+# SendGrid Configuration (for email notifications)
+SENDGRID_API_KEY=your_sendgrid_api_key
+FROM_EMAIL=your_verified_sender_email@example.com
+
+# Twilio Configuration (for SMS notifications)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_TRIAL_NUMBER=your_twilio_phone_number
 ```
 
-**Frontend (.env)**
+**Frontend (`frontend/.env`)**
 ```
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=http://localhost:8080/api/v1
 ```
 
 ---
 
 ## 📋 API Documentation
 
-### Authentication Endpoints
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh JWT token
+All endpoints are prefixed with `/api/v1`.
 
-### Transaction Endpoints
-- `GET /api/transactions` - Get all transactions (with filtering)
-- `POST /api/transactions` - Create new transaction
-- `PUT /api/transactions/{id}` - Update transaction
-- `DELETE /api/transactions/{id}` - Delete transaction
-- `GET /api/transactions/export` - Export to CSV
+### Authentication Endpoints (`/auth`)
+- `POST /register`: User registration
+- `POST /login`: User login
+- `POST /verify`: Verify user account with a token
+- `POST /resend-verification`: Resend verification token
+- `POST /refresh`: Refresh JWT token
+- `POST /logout`: Invalidate refresh token
 
-### Category Endpoints
-- `GET /api/categories` - Get all categories
-- `POST /api/categories` - Create new category
-- `PUT /api/categories/{id}` - Update category
-- `DELETE /api/categories/{id}` - Delete category
+### User Profile Endpoints (`/profile`)
+- `GET /`: Get user profile
+- `PUT /`: Update user profile
+- `POST /change-password`: Change user password
+- `DELETE /`: Delete user account
 
-### Budget Endpoints
-- `GET /api/budgets` - Get all budgets
-- `POST /api/budgets` - Create/update budget
-- `GET /api/budgets/alerts` - Get budget alerts
+### Transaction Endpoints (`/transactions`)
+- `GET /`: Get all transactions (with date filtering)
+- `POST /`: Create new transaction
+- `GET /{id}`: Get a single transaction
+- `PUT /{id}`: Update transaction
+- `DELETE /{id}`: Delete transaction
+- `GET /export`: Export transactions to CSV
+- `POST /from-template/{templateId}`: Create a transaction from a template
 
-*Full API documentation available at `/swagger-ui.html` when running the backend*
+### Category Endpoints (`/categories`)
+- `GET /`: Get all categories for the user
+- `POST /`: Create new category
+- `GET /{id}`: Get a single category
+- `PUT /{id}`: Update category
+- `DELETE /{id}`: Delete category
+
+### Budget Endpoints (`/budgets`)
+- `GET /`: Get all budgets (with year/month filtering)
+- `POST /`: Create/update budget
+- `GET /{id}`: Get a single budget
+- `PUT /{id}`: Update a budget
+- `DELETE /{id}`: Delete a budget
+
+### Receipt Endpoints
+- `POST /transactions/{transactionId}/receipts`: Upload and attach a receipt
+- `GET /transactions/{transactionId}/receipts`: Get all receipts for a transaction
+- `DELETE /receipts/{receiptId}`: Delete a specific receipt
+
+### Recurring Transaction Endpoints (`/recurring-transactions`)
+- `GET, POST /`: Get all or create a new recurring transaction
+- `GET, PUT, DELETE /{id}`: Get, update, or delete a specific one
+- `PATCH /{id}/status`: Activate or deactivate a recurring transaction
+
+### Transaction Template Endpoints (`/transaction-templates`)
+- `GET, POST /`: Get all or create a new transaction template
+- `GET, PUT, DELETE /{id}`: Get, update, or delete a specific template
+
+### Dashboard Endpoints (`/dashboard`)
+- `GET /stats`: Get financial statistics for a date range
+
+### Notification Endpoints (`/notifications`)
+- `GET /`: Get all notifications for the user
+- `POST /{id}/read`: Mark a notification as read
+- `POST /read-all`: Mark all notifications as read
+
+### Global Data Endpoints (`/countries`)
+- `GET /`: Get a list of all countries
+- `GET /{id}`: Get a single country by ID
+
+*Full API documentation available at `/api/v1/api-docs` and Swagger UI at `/swagger-ui.html` when running the backend.*
 
 ---
 
@@ -237,13 +302,13 @@ This project demonstrates mastery of:
 
 | Phase | Duration | Tasks |
 |-------|----------|-------|
-| **Setup & Auth** | Days 1-2 | Project setup, JWT authentication |
-| **Core CRUD** | Days 3-4 | Transaction and category APIs |
-| **Frontend CRUD** | Days 5-6 | React components and forms |
-| **Dashboard** | Days 7-8 | Charts and data visualization |
-| **Filtering & Export** | Days 9-10 | Date filters and CSV export |
-| **Advanced Features** | Days 11-12 | Budget alerts, file upload |
-| **Polish & Deploy** | Days 13-14 | Testing, bug fixes, deployment |
+| **Setup & Auth** | Days 1-2 | ✅ Project setup, JWT authentication |
+| **Core CRUD** | Days 3-4 | ✅ Transaction and category APIs |
+| **Frontend CRUD** | Days 5-6 | ⏳ React components and forms |
+| **Dashboard** | Days 7-8 | ⏳ Charts and data visualization |
+| **Filtering & Export** | Days 9-10 | ✅ Date filters and CSV export |
+| **Advanced Features** | Days 11-12 | ✅ Budget alerts, file upload, recurring txns |
+| **Polish & Deploy** | Days 13-14 | ⏳ Testing, bug fixes, deployment |
 
 ---
 
@@ -270,10 +335,10 @@ This project demonstrates mastery of:
 
 ## 🚧 Current Status
 
-**Phase**: Initial Development  
-**Completed**: Project setup, architecture design, database schema  
-**In Progress**: Backend API implementation  
-**Next**: Frontend React components  
+**Phase**: Backend Complete, Frontend Development Initiated<br>
+**Completed**: Full backend API implementation including authentication, core CRUD (transactions, categories, budgets), and advanced features (receipts, notifications, recurring transactions, templates).<br>
+**In Progress**: Frontend React components for CRUD operations.<br>
+**Next**: Connecting frontend to backend, building the dashboard with data visualization.
 
 ---
 
