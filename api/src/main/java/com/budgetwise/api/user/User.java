@@ -1,9 +1,6 @@
 package com.budgetwise.api.user;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import com.budgetwise.api.auth.token.RefreshToken;
 import com.budgetwise.api.budget.Budget;
 import com.budgetwise.api.category.Category;
 import com.budgetwise.api.global.country.Country;
@@ -15,9 +12,13 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -69,10 +70,6 @@ public class User implements UserDetails {
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean DEFAULT false")
     private boolean isDeleted = false;
 
-    @Lob
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
     private LocalDateTime lastLoginDate;
     private LocalDateTime lastPasswordResetDate;
 
@@ -100,6 +97,9 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

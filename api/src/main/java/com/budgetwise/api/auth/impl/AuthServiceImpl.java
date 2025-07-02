@@ -3,6 +3,8 @@ package com.budgetwise.api.auth.impl;
 import com.budgetwise.api.auth.AuthService;
 import com.budgetwise.api.auth.dto.*;
 import com.budgetwise.api.auth.mapper.AuthMapper;
+import com.budgetwise.api.auth.token.RefreshToken;
+import com.budgetwise.api.auth.token.RefreshTokenRepository;
 import com.budgetwise.api.exception.ResourceNotFoundException;
 import com.budgetwise.api.global.country.Country;
 import com.budgetwise.api.global.country.CountryRepository;
@@ -17,13 +19,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -33,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -58,15 +61,14 @@ public class AuthServiceImpl implements AuthService {
         LocalDateTime loginTime = LocalDateTime.now();
         user.setLastLoginDate(loginTime);
 
-        var accessToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-
-        user.setRefreshToken(refreshToken);
         userRepository.save(user);
+
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = createAndSaveRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshToken.getToken())
                 .build();
     }
 
@@ -134,14 +136,11 @@ public class AuthServiceImpl implements AuthService {
 
         // Now that the account is active, generate and return login tokens
         var accessToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
+        var refreshToken = createAndSaveRefreshToken(user);
 
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshToken.getToken())
                 .build();
     }
 
@@ -149,52 +148,40 @@ public class AuthServiceImpl implements AuthService {
     public AuthenticationResponse refreshToken(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
         final String refreshToken;
-        final String username;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new BadCredentialsException("Refresh token is missing or malformed");
         }
 
         refreshToken = authHeader.substring(7);
-        username = jwtService.extractUsername(refreshToken);
 
-        if (username != null) {
-            var user = this.userRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            if (jwtService.isTokenValid(refreshToken, user) && refreshToken.equals(user.getRefreshToken())) {
-                var accessToken = jwtService.generateToken(user);
-                return AuthenticationResponse.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build();
-            }
-        }
-        throw new BadCredentialsException("Invalid refresh token");
+        // Find the token in the database
+        return refreshTokenRepository.findByToken(refreshToken)
+                .map(this::verifyTokenExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtService.generateToken(user);
+                    return AuthenticationResponse.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(refreshToken)
+                            .build();
+                })
+                .orElseThrow(() -> new BadCredentialsException("Invalid refresh token"));
     }
 
     @Override
     public void logout(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
         final String refreshToken;
-        final String username;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
 
         refreshToken = authHeader.substring(7);
-        username = jwtService.extractUsername(refreshToken);
 
-        if (username != null) {
-            var user = this.userRepository.findByUsername(username).orElse(null);
-            if (user != null) {
-                user.setRefreshToken(null);
-                userRepository.save(user);
-                // Clear the security context
-                SecurityContextHolder.clearContext();
-            }
-        }
+        refreshTokenRepository.findByToken(refreshToken).ifPresent(refreshTokenRepository::delete);
+        SecurityContextHolder.clearContext();
     }
 
     @Override
@@ -234,10 +221,26 @@ public class AuthServiceImpl implements AuthService {
         try {
             emailService.sendEmail(email, subject, body);
         } catch (Exception e) {
-            // In a real app, you'd have more robust error handling, maybe a retry queue.
-            // For now, we'll log the error. The user can request a new token later.
             log.error("Failed to send verification email to {}", email, e);
         }
+    }
+
+    private RefreshToken createAndSaveRefreshToken(User user) {
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(jwtService.generateRefreshToken(user))
+                .expiryDate(Instant.now().plusMillis(jwtService.getRefreshExpiration()))
+                .build();
+        return refreshTokenRepository.save(refreshToken);
+    }
+
+    private RefreshToken verifyTokenExpiration(RefreshToken token) {
+        if (token.getExpiryDate().isBefore(Instant.now())) {
+            refreshTokenRepository.delete(token);
+            throw new IllegalStateException("Refresh token has expired. Please log in again.");
+        }
+        return token;
     }
 
 }

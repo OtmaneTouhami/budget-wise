@@ -72,7 +72,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
      * NOTE: The function used to truncate the date may be database-specific.
      * DATE() is standard for MariaDB/MySQL. For PostgreSQL, it's DATE_TRUNC('day', ...).
      */
-    @Query("SELECT new com.budgetwise.api.dashboard.dto.DailySpending(DATE(t.transactionDate), SUM(t.amount)) " +
+    @Query("SELECT new com.budgetwise.api.dashboard.dto.DailySpending(DATE(t.transactionDate), CAST(SUM(t.amount) AS double)) " +
             "FROM Transaction t WHERE t.user = :user " +
             "AND t.category.categoryType = com.budgetwise.api.category.enums.CategoryType.EXPENSE " +
             "AND t.transactionDate >= :startDate AND t.transactionDate < :endDate " +

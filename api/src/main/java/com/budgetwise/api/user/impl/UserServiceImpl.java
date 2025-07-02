@@ -79,7 +79,6 @@ public class UserServiceImpl implements UserService {
         User currentUser = securityUtils.getCurrentUser();
         currentUser.setActive(false);
         currentUser.setDeleted(true);
-        currentUser.setRefreshToken(null);
         userRepository.save(currentUser);
     }
 
