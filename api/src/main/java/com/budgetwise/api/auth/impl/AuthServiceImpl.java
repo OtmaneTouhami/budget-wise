@@ -46,17 +46,15 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthenticationResponse login(AuthenticationRequest request) {
 
-        authenticationManager.authenticate(
+        var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getLoginIdentifier(),
                         request.getPassword()
                 )
         );
 
-        // If the above line doesn't throw an exception, the user is valid
-        var user = userRepository.findByUsername(request.getLoginIdentifier())
-                .or(() -> userRepository.findByEmail(request.getLoginIdentifier()))
-                .orElseThrow();
+        // Get the UserDetails (your User object) directly from the authentication result
+        User user = (User) authentication.getPrincipal();
 
         LocalDateTime loginTime = LocalDateTime.now();
         user.setLastLoginDate(loginTime);
@@ -170,6 +168,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void logout(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
         final String refreshToken;
