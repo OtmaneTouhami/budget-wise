@@ -1,9 +1,13 @@
-import './index.css'
+import { RouterProvider } from 'react-router-dom';
+import { AppProviders } from './providers/AppProviders';
+import { router } from './router';
 
 function App() {
-  return <>
-    <h1 className="text-3xl font-bold text-green-600">Welcome To BudgetWise+</h1>
-  </>
+  return (
+    <AppProviders>
+      <RouterProvider router={router} />
+    </AppProviders>
+  );
 }
 
-export default App
+export default App;
