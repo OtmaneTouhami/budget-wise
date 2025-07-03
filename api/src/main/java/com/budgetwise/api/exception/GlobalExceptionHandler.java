@@ -123,10 +123,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
             DataIntegrityViolationException ex, HttpServletRequest request) {
 
-        String message = "A database integrity error occurred.";
-        // Check the root cause to see if it's our specific unique constraint
-        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
-            message = "This resource already exists.";
+        String message = "A database integrity error occurred. A required resource may already exist.";
+        // Check the root cause to provide a more specific message
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException cve) {
+            String constraintName = cve.getConstraintName();
+            if (constraintName != null) {
+                if (constraintName.contains("users_username_key") || constraintName.contains("UC_USER_USERNAME")) {
+                    message = "This username is already taken. Please choose another one.";
+                } else if (constraintName.contains("users_email_key") || constraintName.contains("UC_USER_EMAIL")) {
+                    message = "This email address is already registered.";
+                } else if (constraintName.contains("categories_user_id_name_key")) {
+                    message = "You already have a category with this name.";
+                } else if (constraintName.contains("budgets_user_id_category_id_budget_month_key")) {
+                    message = "A budget for this category and month already exists.";
+                }
+            }
         }
 
         ErrorResponse errorResponse = ErrorResponse.builder()
