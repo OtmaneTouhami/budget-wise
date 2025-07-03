@@ -3,6 +3,7 @@ package com.budgetwise.api.user;
 import com.budgetwise.api.user.dto.ChangePasswordRequest;
 import com.budgetwise.api.user.dto.UpdateProfileRequest;
 import com.budgetwise.api.user.dto.UserProfileResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/profile")
 @RequiredArgsConstructor
+@Tag(name = "User Profile", description = "Endpoints for managing user profile")
 public class UserController {
     private final UserService userService;
 

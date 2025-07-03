@@ -3,6 +3,7 @@ package com.budgetwise.api.transaction;
 import com.budgetwise.api.transaction.dto.CreateTransactionFromTemplateRequest;
 import com.budgetwise.api.transaction.dto.TransactionRequest;
 import com.budgetwise.api.transaction.dto.TransactionResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
+@Tag(name = "Transactions", description = "Endpoints for managing transactions")
 public class TransactionController {
 
     private final TransactionService transactionService;

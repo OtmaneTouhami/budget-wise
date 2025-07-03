@@ -1,6 +1,7 @@
 package com.budgetwise.api.notification;
 
 import com.budgetwise.api.notification.dto.NotificationResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/notifications")
 @RequiredArgsConstructor
+@Tag(name = "Notifications", description = "Endpoints for managing notifications")
 public class NotificationController {
 
     private final NotificationService notificationService;

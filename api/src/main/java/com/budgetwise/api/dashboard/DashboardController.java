@@ -1,6 +1,7 @@
 package com.budgetwise.api.dashboard;
 
 import com.budgetwise.api.dashboard.dto.DashboardStatsResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
+@Tag(name = "Dashboard", description = "Endpoints for retrieving dashboard stats")
 public class DashboardController {
 
     private final DashboardService dashboardService;

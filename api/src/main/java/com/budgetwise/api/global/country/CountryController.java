@@ -1,6 +1,7 @@
 package com.budgetwise.api.global.country;
 
 import com.budgetwise.api.global.country.dto.CountryDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/countries")
 @RequiredArgsConstructor
+@Tag(name = "Countries", description = "Endpoints for retrieving country data")
 public class CountryController {
 
     private final CountryService countryService;

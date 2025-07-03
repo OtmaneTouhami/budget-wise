@@ -1,6 +1,7 @@
 package com.budgetwise.api.auth;
 
 import com.budgetwise.api.auth.dto.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Endpoints for user registration, login, and token management")
 public class AuthenticationController {
 
     private final AuthService authService;

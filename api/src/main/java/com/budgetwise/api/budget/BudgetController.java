@@ -2,6 +2,7 @@ package com.budgetwise.api.budget;
 
 import com.budgetwise.api.budget.dto.BudgetRequest;
 import com.budgetwise.api.budget.dto.BudgetResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/budgets")
 @RequiredArgsConstructor
+@Tag(name = "Budgets", description = "Endpoints for managing budgets")
 public class BudgetController {
 
     private final BudgetService budgetService;

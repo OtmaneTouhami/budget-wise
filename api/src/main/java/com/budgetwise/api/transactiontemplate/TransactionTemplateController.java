@@ -2,6 +2,7 @@ package com.budgetwise.api.transactiontemplate;
 
 import com.budgetwise.api.transactiontemplate.dto.TransactionTemplateRequest;
 import com.budgetwise.api.transactiontemplate.dto.TransactionTemplateResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/transaction-templates")
 @RequiredArgsConstructor
+@Tag(name = "Transaction Templates", description = "Endpoints for managing transaction templates")
 public class TransactionTemplateController {
 
     private final TransactionTemplateService templateService;

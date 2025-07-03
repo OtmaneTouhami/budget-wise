@@ -2,6 +2,7 @@ package com.budgetwise.api.category;
 
 import com.budgetwise.api.category.dto.CategoryRequest;
 import com.budgetwise.api.category.dto.CategoryResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@Tag(name = "Categories", description = "Endpoints for managing categories")
 public class CategoryController {
     private final CategoryService categoryService;
 

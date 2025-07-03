@@ -3,6 +3,7 @@ package com.budgetwise.api.recurringtransaction;
 import com.budgetwise.api.recurringtransaction.dto.RecurringTransactionRequest;
 import com.budgetwise.api.recurringtransaction.dto.RecurringTransactionResponse;
 import com.budgetwise.api.recurringtransaction.dto.UpdateRecurringStatusRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/recurring-transactions")
 @RequiredArgsConstructor
+@Tag(name = "Recurring Transactions", description = "Endpoints for managing recurring transactions")
 public class RecurringTransactionController {
 
     private final RecurringTransactionService recurringService;
