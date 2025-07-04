@@ -48,13 +48,20 @@ export const TransactionsTable = () => {
   // State management for filters and modals
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
-  const [editingTx, setEditingTx] = React.useState<TransactionResponse | null>(null);
-  const [deletingTx, setDeletingTx] = React.useState<TransactionResponse | null>(null);
-  const [detailsTx, setDetailsTx] = React.useState<TransactionResponse | null>(null);
+  const [editingTx, setEditingTx] = React.useState<TransactionResponse | null>(
+    null
+  );
+  const [deletingTx, setDeletingTx] =
+    React.useState<TransactionResponse | null>(null);
+  const [detailsTx, setDetailsTx] = React.useState<TransactionResponse | null>(
+    null
+  );
 
   // Data fetching hook for transactions, reacts to dateRange changes
   const { data: transactions, isLoading } = useGetTransactions({
-    startDate: dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : undefined,
+    startDate: dateRange?.from
+      ? format(dateRange.from, "yyyy-MM-dd")
+      : undefined,
     endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
   });
 
@@ -65,38 +72,56 @@ export const TransactionsTable = () => {
 
   // Handler functions for CRUD operations
   const handleCreate = (values: any) => {
-    createMutation.mutate({ data: values }, {
-      onSuccess: () => {
-        toast.success("Transaction created.");
-        queryClient.invalidateQueries({ queryKey: getGetTransactionsQueryKey() });
-        setIsCreateOpen(false);
-      },
-      onError: (err) => toast.error((err as { data: ApiErrorResponse }).data.message),
-    });
+    createMutation.mutate(
+      { data: values },
+      {
+        onSuccess: () => {
+          toast.success("Transaction created.");
+          queryClient.invalidateQueries({
+            queryKey: getGetTransactionsQueryKey(),
+          });
+          setIsCreateOpen(false);
+        },
+        onError: (err) =>
+          toast.error((err as { data: ApiErrorResponse }).data.message),
+      }
+    );
   };
 
   const handleUpdate = (values: any) => {
     if (!editingTx?.id) return;
-    updateMutation.mutate({ id: editingTx.id, data: values }, {
-      onSuccess: () => {
-        toast.success("Transaction updated.");
-        queryClient.invalidateQueries({ queryKey: getGetTransactionsQueryKey() });
-        setEditingTx(null);
-      },
-      onError: (err) => toast.error((err as { data: ApiErrorResponse }).data.message),
-    });
+    updateMutation.mutate(
+      { id: editingTx.id, data: values },
+      {
+        onSuccess: () => {
+          toast.success("Transaction updated.");
+          queryClient.invalidateQueries({
+            queryKey: getGetTransactionsQueryKey(),
+          });
+          setEditingTx(null);
+        },
+        onError: (err) =>
+          toast.error((err as { data: ApiErrorResponse }).data.message),
+      }
+    );
   };
 
   const handleDelete = () => {
     if (!deletingTx?.id) return;
-    deleteMutation.mutate({ id: deletingTx.id }, {
-      onSuccess: () => {
-        toast.success("Transaction deleted.");
-        queryClient.invalidateQueries({ queryKey: getGetTransactionsQueryKey() });
-        setDeletingTx(null);
-      },
-      onError: (err) => toast.error((err as { data: ApiErrorResponse }).data.message),
-    });
+    deleteMutation.mutate(
+      { id: deletingTx.id },
+      {
+        onSuccess: () => {
+          toast.success("Transaction deleted.");
+          queryClient.invalidateQueries({
+            queryKey: getGetTransactionsQueryKey(),
+          });
+          setDeletingTx(null);
+        },
+        onError: (err) =>
+          toast.error((err as { data: ApiErrorResponse }).data.message),
+      }
+    );
   };
 
   // Column definitions for the data table
@@ -104,7 +129,8 @@ export const TransactionsTable = () => {
     {
       accessorKey: "transactionDate",
       header: "Date",
-      cell: ({ row }) => format(new Date(row.getValue("transactionDate")), "PPP"),
+      cell: ({ row }) =>
+        format(new Date(row.getValue("transactionDate")), "PPP"),
     },
     {
       accessorKey: "description",
@@ -121,18 +147,23 @@ export const TransactionsTable = () => {
     {
       accessorKey: "categoryName",
       header: "Category",
-      // --- FIX: Correct filter function compares category IDs ---
-      filterFn: (row, id, value) => {
+      filterFn: (row, value) => {
         return value === row.original.categoryId;
       },
     },
     {
       accessorKey: "categoryType",
       header: "Type",
+      filterFn: (row, id, value) => {
+        return value === row.getValue(id);
+      },
       cell: ({ row }) => {
         const isIncome = row.getValue("categoryType") === "INCOME";
         return (
-          <Badge variant={isIncome ? "default" : "destructive"} className={cn(isIncome && "bg-green-600 hover:bg-green-600")}>
+          <Badge
+            variant={isIncome ? "default" : "destructive"}
+            className={cn(isIncome && "bg-green-600 hover:bg-green-600")}
+          >
             {row.getValue("categoryType")}
           </Badge>
         );
@@ -147,15 +178,18 @@ export const TransactionsTable = () => {
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
-        }).format(amount).replace('$', currencySymbol);
-        
-        const isIncome = type === 'INCOME';
-        const sign = isIncome ? '+' : '-';
-        const colorClass = isIncome ? 'text-green-600' : 'text-red-600';
+        })
+          .format(amount)
+          .replace("$", currencySymbol);
+
+        const isIncome = type === "INCOME";
+        const sign = isIncome ? "+" : "-";
+        const colorClass = isIncome ? "text-green-600" : "text-red-600";
 
         return (
           <div className={cn("text-right font-medium", colorClass)}>
-            {sign}{formatted}
+            {sign}
+            {formatted}
           </div>
         );
       },
@@ -177,7 +211,10 @@ export const TransactionsTable = () => {
             <DropdownMenuItem onSelect={() => setEditingTx(row.original)}>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setDeletingTx(row.original)} className="text-destructive">
+            <DropdownMenuItem
+              onSelect={() => setDeletingTx(row.original)}
+              className="text-destructive"
+            >
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -193,7 +230,7 @@ export const TransactionsTable = () => {
         columns={columns}
         isLoading={isLoading}
         ToolbarComponent={(table: TanstackTable<TransactionResponse>) => (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2.5">
             <DataTableToolbar
               table={table}
               dateRange={dateRange}
@@ -223,7 +260,10 @@ export const TransactionsTable = () => {
         onClose={() => setDetailsTx(null)}
       />
 
-      <Dialog open={!!editingTx} onOpenChange={(isOpen) => !isOpen && setEditingTx(null)}>
+      <Dialog
+        open={!!editingTx}
+        onOpenChange={(isOpen) => !isOpen && setEditingTx(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Transaction</DialogTitle>
@@ -235,18 +275,26 @@ export const TransactionsTable = () => {
           />
         </DialogContent>
       </Dialog>
-      
-      <Dialog open={!!deletingTx} onOpenChange={(isOpen) => !isOpen && setDeletingTx(null)}>
+
+      <Dialog
+        open={!!deletingTx}
+        onOpenChange={(isOpen) => !isOpen && setDeletingTx(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Transaction</DialogTitle>
           </DialogHeader>
-          Are you sure you want to delete this transaction? This action cannot be undone.
+          Are you sure you want to delete this transaction? This action cannot
+          be undone.
           <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button variant="ghost">Cancel</Button>
             </DialogClose>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+            >
               {deleteMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </DialogFooter>
