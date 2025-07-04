@@ -11,6 +11,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { BudgetsPage } from "@/pages/BudgetsPage";
 import { TransactionsPage } from "@/pages/TransactionsPage";
+import { RecurringTransactionsPage } from "@/pages/RecurringTransactionsPage";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -44,7 +45,6 @@ export const router = createBrowserRouter([
             path: "dashboard",
             element: <DashboardPage />,
           },
-          // --- ADD THIS NEW ROUTE ---
           {
             path: "profile",
             element: <ProfilePage />,
@@ -58,8 +58,12 @@ export const router = createBrowserRouter([
             element: <BudgetsPage />,
           },
           {
-            path: 'transactions',
+            path: "transactions",
             element: <TransactionsPage />,
+          },
+          {
+            path: "recurring",
+            element: <RecurringTransactionsPage />,
           },
         ],
       },
