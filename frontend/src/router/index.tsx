@@ -10,6 +10,7 @@ import { AppLayout } from "../components/layouts/AppLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { BudgetsPage } from "@/pages/BudgetsPage";
+import { TransactionsPage } from "@/pages/TransactionsPage";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
           {
             path: "budgets",
             element: <BudgetsPage />,
+          },
+          {
+            path: 'transactions',
+            element: <TransactionsPage />,
           },
         ],
       },
