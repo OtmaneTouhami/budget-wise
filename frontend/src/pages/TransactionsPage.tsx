@@ -1,4 +1,5 @@
 import { TransactionsTable } from "@/features/transactions/components/TransactionsTable";
+import { TransactionTemplatesList } from "@/features/transactions/components/TransactionTemplatesList";
 import { Separator } from "@/components/ui/separator";
 
 export const TransactionsPage = () => {
@@ -11,7 +12,8 @@ export const TransactionsPage = () => {
                 </p>
             </div>
             
-            {/* We will add the templates section here later */}
+            <TransactionTemplatesList />
+            
             <Separator />
             
             <TransactionsTable />
