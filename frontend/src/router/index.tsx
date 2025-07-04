@@ -12,6 +12,7 @@ import { SettingsPage } from "@/pages/SettingsPage";
 import { BudgetsPage } from "@/pages/BudgetsPage";
 import { TransactionsPage } from "@/pages/TransactionsPage";
 import { RecurringTransactionsPage } from "@/pages/RecurringTransactionsPage";
+import { NotificationsPage } from "@/pages/NotificationsPage";
 
 export const router = createBrowserRouter([
   // Public routes
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
           {
             path: "recurring",
             element: <RecurringTransactionsPage />,
+          },
+          {
+            path: "notifications",
+            element: <NotificationsPage />,
           },
         ],
       },

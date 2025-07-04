@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { TransactionResponseCategoryType } from "@/api/generated/hooks/openAPIDefinition.schemas";
 
-
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   dateRange: DateRange | undefined;
@@ -31,18 +30,19 @@ export function DataTableToolbar<TData>({
   const [isExportModalOpen, setIsExportModalOpen] = React.useState(false);
 
   const categoryColumn = table.getColumn("categoryName");
-  // --- GET THE NEW TYPE COLUMN ---
   const typeColumn = table.getColumn("categoryType");
 
-  // A filter is active if any of the filters are set
-  const isFiltered = categoryColumn?.getIsFiltered() || typeColumn?.getIsFiltered() || !!dateRange;
+  // A filter is active if any of the remaining filters are set
+  const isFiltered =
+    categoryColumn?.getIsFiltered() ||
+    typeColumn?.getIsFiltered() ||
+    !!dateRange;
 
   const handleCategoryChange = (value: string | undefined) => {
     categoryColumn?.setFilterValue(value);
-  }
-  
+  };
+
   const handleTypeChange = (value: TransactionResponseCategoryType | "ALL") => {
-    // If "ALL" is selected, clear the filter, otherwise set it
     typeColumn?.setFilterValue(value === "ALL" ? undefined : value);
   };
 
@@ -54,50 +54,59 @@ export function DataTableToolbar<TData>({
   return (
     <>
       <div className="flex w-full items-center justify-between">
-        <div className="flex flex-1 items-center space-x-2">
+        <div className="flex flex-1 flex-wrap items-center gap-2">
           <DateRangePicker date={dateRange} setDate={setDateRange} />
-          
-          {/* --- ADD THE TYPE FILTER --- */}
-          <div className="w-[150px]">
-            <Select 
-                value={typeColumn?.getFilterValue() as string ?? "ALL"} 
-                onValueChange={handleTypeChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by type..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Types</SelectItem>
-                <SelectItem value="INCOME">Income</SelectItem>
-                <SelectItem value="EXPENSE">Expense</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
+          <Select
+            value={(typeColumn?.getFilterValue() as string) ?? "ALL"}
+            onValueChange={handleTypeChange}
+          >
+            <SelectTrigger className="w-auto min-w-[120px]">
+              <SelectValue placeholder="Filter by type..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Types</SelectItem>
+              <SelectItem value="INCOME">Income</SelectItem>
+              <SelectItem value="EXPENSE">Expense</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* The "Source" filter has been removed from here */}
+
           <div className="w-[200px]">
-            <CategoryCombobox 
+            <CategoryCombobox
               value={categoryColumn?.getFilterValue() as string}
               onChange={handleCategoryChange}
-              // --- Pass the selected type to filter the categories dropdown ---
-              filterByType={typeColumn?.getFilterValue() as TransactionResponseCategoryType | undefined}
+              filterByType={
+                typeColumn?.getFilterValue() as
+                  | TransactionResponseCategoryType
+                  | undefined
+              }
             />
           </div>
-          
+
           {isFiltered && (
-            <Button variant="ghost" onClick={handleResetFilters} className="h-8 px-2 lg:px-3">
+            <Button
+              variant="ghost"
+              onClick={handleResetFilters}
+              className="h-8 px-2 lg:px-3"
+            >
               Reset
               <X className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>
-        
-        <Button variant="outline" onClick={() => setIsExportModalOpen(true)}>
-            <Download className="mr-2 h-4 w-4" />
-            Export
+
+        <Button
+          variant="outline"
+          className="ml-2"
+          onClick={() => setIsExportModalOpen(true)}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export
         </Button>
       </div>
 
-      <ExportTransactionsModal 
+      <ExportTransactionsModal
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
       />

@@ -45,7 +45,6 @@ export const TransactionsTable = () => {
   const queryClient = useQueryClient();
   const currencySymbol = useCurrency();
 
-  // State management for filters and modals
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
   const [editingTx, setEditingTx] = React.useState<TransactionResponse | null>(
@@ -57,7 +56,6 @@ export const TransactionsTable = () => {
     null
   );
 
-  // Data fetching hook for transactions, reacts to dateRange changes
   const { data: transactions, isLoading } = useGetTransactions({
     startDate: dateRange?.from
       ? format(dateRange.from, "yyyy-MM-dd")
@@ -65,12 +63,10 @@ export const TransactionsTable = () => {
     endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
   });
 
-  // API mutation hooks
   const createMutation = useCreateTransaction();
   const updateMutation = useUpdateTransaction();
   const deleteMutation = useDeleteTransaction();
 
-  // Handler functions for CRUD operations
   const handleCreate = (values: any) => {
     createMutation.mutate(
       { data: values },
@@ -87,7 +83,6 @@ export const TransactionsTable = () => {
       }
     );
   };
-
   const handleUpdate = (values: any) => {
     if (!editingTx?.id) return;
     updateMutation.mutate(
@@ -105,7 +100,6 @@ export const TransactionsTable = () => {
       }
     );
   };
-
   const handleDelete = () => {
     if (!deletingTx?.id) return;
     deleteMutation.mutate(
@@ -124,7 +118,6 @@ export const TransactionsTable = () => {
     );
   };
 
-  // Column definitions for the data table
   const columns: ColumnDef<TransactionResponse>[] = [
     {
       accessorKey: "transactionDate",
@@ -147,16 +140,12 @@ export const TransactionsTable = () => {
     {
       accessorKey: "categoryName",
       header: "Category",
-      filterFn: (row, value) => {
-        return value === row.original.categoryId;
-      },
+      filterFn: (row, id, value) => value === row.original.categoryId,
     },
     {
       accessorKey: "categoryType",
       header: "Type",
-      filterFn: (row, id, value) => {
-        return value === row.getValue(id);
-      },
+      filterFn: (row, id, value) => value === row.getValue(id),
       cell: ({ row }) => {
         const isIncome = row.getValue("categoryType") === "INCOME";
         return (
@@ -169,6 +158,7 @@ export const TransactionsTable = () => {
         );
       },
     },
+    // The "Source" column has been removed from here
     {
       accessorKey: "amount",
       header: () => <div className="text-right">Amount</div>,
@@ -181,11 +171,9 @@ export const TransactionsTable = () => {
         })
           .format(amount)
           .replace("$", currencySymbol);
-
         const isIncome = type === "INCOME";
         const sign = isIncome ? "+" : "-";
         const colorClass = isIncome ? "text-green-600" : "text-red-600";
-
         return (
           <div className={cn("text-right font-medium", colorClass)}>
             {sign}
@@ -253,13 +241,11 @@ export const TransactionsTable = () => {
           </div>
         )}
       />
-
       <TransactionDetailsModal
         transaction={detailsTx}
         isOpen={!!detailsTx}
         onClose={() => setDetailsTx(null)}
       />
-
       <Dialog
         open={!!editingTx}
         onOpenChange={(isOpen) => !isOpen && setEditingTx(null)}
@@ -275,7 +261,6 @@ export const TransactionsTable = () => {
           />
         </DialogContent>
       </Dialog>
-
       <Dialog
         open={!!deletingTx}
         onOpenChange={(isOpen) => !isOpen && setDeletingTx(null)}
