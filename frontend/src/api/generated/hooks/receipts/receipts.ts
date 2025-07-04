@@ -190,13 +190,15 @@ export function useGetReceiptsForTransaction<
 
 export const uploadReceipt = (
   transactionId: string,
-  uploadReceiptBody: UploadReceiptBody,
+  // The type for the body should be FormData, but we can cast it later
+  uploadReceiptBody: FormData, 
   signal?: AbortSignal,
 ) => {
   return apiClient<ReceiptResponse>({
     url: `/transactions/${transactionId}/receipts`,
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    // --- THIS IS THE FIX: REMOVE THE HEADERS LINE ---
+    // headers: { "Content-Type": "application/json" }, // <--- DELETE THIS LINE
     data: uploadReceiptBody,
     signal,
   });
@@ -209,13 +211,13 @@ export const getUploadReceiptMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof uploadReceipt>>,
     TError,
-    { transactionId: string; data: UploadReceiptBody },
+    { transactionId: string; data: FormData },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof uploadReceipt>>,
   TError,
-  { transactionId: string; data: UploadReceiptBody },
+  { transactionId: string; data: FormData },
   TContext
 > => {
   const mutationKey = ["uploadReceipt"];
@@ -229,7 +231,7 @@ export const getUploadReceiptMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof uploadReceipt>>,
-    { transactionId: string; data: UploadReceiptBody }
+    { transactionId: string; data: FormData }
   > = (props) => {
     const { transactionId, data } = props ?? {};
 
@@ -250,7 +252,7 @@ export const useUploadReceipt = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof uploadReceipt>>,
       TError,
-      { transactionId: string; data: UploadReceiptBody },
+      { transactionId: string; data: FormData },
       TContext
     >;
   },
@@ -258,7 +260,7 @@ export const useUploadReceipt = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof uploadReceipt>>,
   TError,
-  { transactionId: string; data: UploadReceiptBody },
+  { transactionId: string; data: FormData },
   TContext
 > => {
   const mutationOptions = getUploadReceiptMutationOptions(options);
