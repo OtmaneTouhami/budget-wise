@@ -75,7 +75,6 @@ export const DashboardPage = () => {
         <DateRangePicker date={date} setDate={setDate} />
       </div>
 
-      {/* --- MODIFIED TOP ROW OF CARDS --- */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Income"
@@ -99,7 +98,6 @@ export const DashboardPage = () => {
           value={dashboardData.netSavings || 0}
           icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
         />
-        {/* Replace the generic "Budget Remaining" card with our new specific one */}
         <BiggestExpenseCard data={dashboardData.biggestExpense} />
       </div>
 

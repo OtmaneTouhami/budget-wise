@@ -78,10 +78,10 @@ This project represents the culmination of the ALX Software Engineering Webstack
 ### Frontend
 - **Framework**: React 19
 - **Routing**: React Router DOM
-- **State Management**: Context API / Redux Toolkit
+- **State Management**: Zustand & Context API
 - **HTTP Client**: Axios
-- **Charts**: Chart.js / Recharts
-- **Styling**: CSS3 + Responsive Design
+- **Charts**: Recharts
+- **Styling**: Tailwind CSS + shadcn/ui
 - **Build Tool**: Vite
 
 ### DevOps & Tools
@@ -304,10 +304,10 @@ This project demonstrates mastery of:
 |-------|----------|-------|
 | **Setup & Auth** | Days 1-2 | ✅ Project setup, JWT authentication |
 | **Core CRUD** | Days 3-4 | ✅ Transaction and category APIs |
-| **Frontend CRUD** | Days 5-6 | ⏳ React components and forms |
-| **Dashboard** | Days 7-8 | ⏳ Charts and data visualization |
+| **Frontend CRUD** | Days 5-6 | ✅ React components and forms for Transactions, Budgets, Categories |
+| **Dashboard** | Days 7-8 | ✅ Charts and data visualization |
 | **Filtering & Export** | Days 9-10 | ✅ Date filters and CSV export |
-| **Advanced Features** | Days 11-12 | ✅ Budget alerts, file upload, recurring txns |
+| **Advanced Features** | Days 11-12 | ✅ Backend (Receipts, Notifications, Recurring Txns) <br> ✅ Frontend (Recurring Txns) |
 | **Polish & Deploy** | Days 13-14 | ⏳ Testing, bug fixes, deployment |
 
 ---
@@ -335,10 +335,18 @@ This project demonstrates mastery of:
 
 ## 🚧 Current Status
 
-**Phase**: Backend Complete, Frontend Development Initiated<br>
-**Completed**: Full backend API implementation including authentication, core CRUD (transactions, categories, budgets), and advanced features (receipts, notifications, recurring transactions, templates).<br>
-**In Progress**: Frontend React components for CRUD operations.<br>
-**Next**: Connecting frontend to backend, building the dashboard with data visualization.
+**Phase**: Frontend Development Nearing Completion<br>
+**Completed**: 
+- Full backend API implementation including authentication, core CRUD, and advanced features.
+- Frontend implementation for most core features:
+  - User Authentication (Login, Registration, Verification).
+  - Full CRUD operations for Transactions with filtering.
+  - Full CRUD operations for Budgets with monthly views.
+  - Full CRUD operations for Recurring Transactions.
+  - Interactive Dashboard with statistics and charts.
+  
+**In Progress**: Finalizing advanced frontend features (e.g., receipt handling, notifications) and polishing the user interface.<br>
+**Next**: Comprehensive testing, bug fixing, and preparing for deployment.
 
 ---
 
