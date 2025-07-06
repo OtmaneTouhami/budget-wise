@@ -25,6 +25,7 @@ export const DashboardPage = () => {
     data: dashboardData,
     isLoading,
     error,
+    refetch,
   } = useGetDashboardStats(
     {
       startDate: date?.from ? format(date.from, "yyyy-MM-dd") : undefined,
@@ -34,6 +35,10 @@ export const DashboardPage = () => {
       query: { enabled: !!accessToken },
     }
   );
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const expenseChange = React.useMemo(() => {
     if (
