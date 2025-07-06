@@ -84,46 +84,48 @@ export const SpendingBreakdownChart = ({
             No expense data for this period.
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="h-[350px] lg:col-span-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: "0.5rem",
-                      background: "hsl(var(--background))",
-                    }}
-                    formatter={(value: number, name: string, props: any) => [
-                      `${currencySymbol}${value.toFixed(2)} (${props.payload.percentage.toFixed(1)}%)`,
-                      name,
-                    ]}
-                  />
-                  <Pie
-                    data={enhancedData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    outerRadius={130}
-                    innerRadius={60}
-                    fill="#8884d8"
-                    dataKey="totalAmount"
-                    nameKey="categoryName"
-                    paddingAngle={2}
-                  >
-                    {enhancedData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                        stroke="hsl(var(--background))"
-                        strokeWidth={1}
-                      />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="h-[350px] lg:col-span-1 flex justify-center">
+              <div className="w-full lg:w-[70%]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "0.5rem",
+                        background: "hsl(var(--background))",
+                      }}
+                      formatter={(value: number, name: string, props: any) => [
+                        `${currencySymbol}${value.toFixed(2)} (${props.payload.percentage.toFixed(1)}%)`,
+                        name,
+                      ]}
+                    />
+                    <Pie
+                      data={enhancedData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                      outerRadius={130}
+                      innerRadius={60}
+                      fill="#8884d8"
+                      dataKey="totalAmount"
+                      nameKey="categoryName"
+                      paddingAngle={2}
+                    >
+                      {enhancedData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                          stroke="hsl(var(--background))"
+                          strokeWidth={1}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 lg:pr-12">
               <h3 className="font-medium mb-4">Category Breakdown</h3>
               <div className="space-y-4">
                 {enhancedData.map((entry, index) => (
