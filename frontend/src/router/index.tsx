@@ -1,5 +1,5 @@
 // --- File: frontend/src/router/index.tsx ---
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { DashboardPage } from "../pages/DashboardPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
@@ -22,16 +22,15 @@ export const router = createBrowserRouter([
     element: <GuestRoute />,
     errorElement: <_404Page />,
     children: [
-      { path: '/', element: <LandingPage /> },
-      { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
-      { path: '/verify', element: <VerifyPage /> },
+      { path: "/", element: <LandingPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
+      { path: "/verify", element: <VerifyPage /> },
     ],
   },
-  
+
   // Protected app routes
   {
-    path: '/', 
     element: <ProtectedRoute />,
     errorElement: <_404Page />,
     children: [
@@ -39,15 +38,13 @@ export const router = createBrowserRouter([
         // AppLayout acts as the container for all authenticated pages
         element: <AppLayout />,
         children: [
-          // Redirect from root to dashboard for logged-in users
-          { index: true, element: <Navigate to="/dashboard" replace /> }, 
-          { path: 'dashboard', element: <DashboardPage /> },
-          { path: 'transactions', element: <TransactionsPage /> },
-          { path: 'budgets', element: <BudgetsPage /> },
-          { path: 'recurring', element: <RecurringTransactionsPage /> },
-          { path: 'notifications', element: <NotificationsPage /> },
-          { path: 'profile', element: <ProfilePage /> },
-          { path: 'settings', element: <SettingsPage /> },
+          { path: "/dashboard", element: <DashboardPage /> },
+          { path: "/transactions", element: <TransactionsPage /> },
+          { path: "/budgets", element: <BudgetsPage /> },
+          { path: "/recurring", element: <RecurringTransactionsPage /> },
+          { path: "/notifications", element: <NotificationsPage /> },
+          { path: "/profile", element: <ProfilePage /> },
+          { path: "/settings", element: <SettingsPage /> },
         ],
       },
     ],
