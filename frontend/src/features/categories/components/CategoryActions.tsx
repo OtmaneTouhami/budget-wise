@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/categories/components/CategoryActions.tsx ---
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
@@ -76,7 +75,6 @@ export const CategoryActions = ({ category }: CategoryActionsProps) => {
         },
         onError: (error) => {
           const apiError = error as { data: ApiErrorResponse };
-          // Your backend prevents deleting categories with transactions, so handle that specific error.
           toast.error(apiError.data?.message || "Failed to delete category.");
         },
       }

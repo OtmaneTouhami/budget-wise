@@ -64,7 +64,6 @@ export const UpdateProfileForm = () => {
     try {
       const updatedUser = await updateUserMutation.mutateAsync({ data: values });
       toast.success("Profile updated successfully!");
-      // Update the user in the auth store to reflect changes immediately
       if (user) {
         const tokens = useAuthStore.getState();
         if(tokens.accessToken && tokens.refreshToken) {
@@ -121,7 +120,6 @@ export const UpdateProfileForm = () => {
                     </FormItem>
                 )}
             />
-            {/* You would need a more advanced phone input here if needed */}
             <FormField
                 control={form.control}
                 name="phoneNumber"

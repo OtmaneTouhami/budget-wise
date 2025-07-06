@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-// Import the generated TypeScript type for a user profile
 import type { UserProfileResponse } from "@/api/generated/hooks/openAPIDefinition.schemas";
 
 // Define the shape of your store's state and actions

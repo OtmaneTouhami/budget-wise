@@ -1,5 +1,3 @@
-// src/api/api-client.ts
-
 import axios from "axios";
 import type {
   AxiosError,

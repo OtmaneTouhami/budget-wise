@@ -158,7 +158,6 @@ export const TransactionsTable = () => {
         );
       },
     },
-    // The "Source" column has been removed from here
     {
       accessorKey: "amount",
       header: () => <div className="text-right">Amount</div>,

@@ -26,7 +26,6 @@ import type { ApiErrorResponse } from "@/types/error";
 
 
 const passwordSchema = changePasswordBody.extend({
-    // We already have newPassword, just add confirm
     confirmationPassword: z.string(),
 }).refine((data) => data.newPassword === data.confirmationPassword, {
     message: "New passwords do not match",

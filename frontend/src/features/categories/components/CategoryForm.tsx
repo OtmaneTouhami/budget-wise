@@ -29,7 +29,7 @@ type CategorySchema = z.infer<typeof categorySchema>;
 interface CategoryFormProps {
   onSubmit: (values: CategorySchema) => void;
   isLoading: boolean;
-  initialData?: CategoryResponse; // Optional initial data for editing
+  initialData?: CategoryResponse;
 }
 
 export const CategoryForm = ({

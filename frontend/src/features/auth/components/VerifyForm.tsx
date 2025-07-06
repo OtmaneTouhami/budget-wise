@@ -50,7 +50,6 @@ export const VerifyForm = () => {
 
   const [resendCooldown, setResendCooldown] = React.useState(0);
 
-  // Disable this hook from running automatically; we will trigger it manually.
   const { refetch: fetchProfile } = useGetUserProfile({
     query: { enabled: false },
   });
@@ -78,7 +77,6 @@ export const VerifyForm = () => {
 
       toast.success("Account verified successfully! Logging you in...");
 
-      // -- FIX for Success Bug --
       // 2. IMMEDIATELY set the tokens in the store. This ensures the next API call is authenticated.
       useAuthStore.setState({
         accessToken: tokens.access_token,
@@ -105,7 +103,6 @@ export const VerifyForm = () => {
       // 5. Navigate to the dashboard
       navigate("/dashboard");
     } catch (error) {
-      // -- FIX for Failure Bug --
       const apiError = error as { data: ApiErrorResponse };
       toast.error(
         apiError.data?.message || "Verification failed. Please try again."

@@ -113,7 +113,7 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Expense Breakdown - Full row and slightly bigger */}
+      {/* Expense Breakdown */}
       <div className="grid gap-4">
         <div className="w-full">
           <SpendingBreakdownChart data={dashboardData.expenseBreakdown || []} />

@@ -1,4 +1,3 @@
-// --- File: frontend/src/router/GuestRoute.tsx ---
 import { useAuthStore } from "@/store/auth-store";
 import { Navigate, Outlet } from "react-router-dom";
 

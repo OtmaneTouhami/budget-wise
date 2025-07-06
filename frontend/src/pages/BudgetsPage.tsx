@@ -38,7 +38,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-// --- IMPORT: Add Tooltip components ---
 import {
   Tooltip,
   TooltipContent,
@@ -61,18 +60,16 @@ export const BudgetsPage = () => {
   const month = currentDate.getMonth() + 1;
   const currencySymbol = useCurrency();
 
-  // --- START: NEW LOGIC FOR DISABLING BUTTON ---
   const startOfCurrentMonth = startOfMonth(new Date());
   const startOfViewingMonth = startOfMonth(currentDate);
   const isViewingPastMonth = startOfViewingMonth < startOfCurrentMonth;
-  // --- END: NEW LOGIC ---
 
+  
   const { data: budgets, isLoading } = useGetBudgets({ year, month });
   const createMutation = useCreateBudget();
   const updateMutation = useUpdateBudget();
   const deleteMutation = useDeleteBudget();
 
-  // ... (All handler functions: handleCreate, handleUpdate, handleDelete remain exactly the same) ...
   const budgetMonthString = format(currentDate, "yyyy-MM");
 
   const handleCreate = (values: any) => {
@@ -151,11 +148,9 @@ export const BudgetsPage = () => {
           onDateChange={setCurrentDate}
         />
 
-        {/* --- MODIFICATION START: Wrap DialogTrigger in Tooltip --- */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              {/* A span wrapper is needed for tooltips on disabled elements */}
               <span tabIndex={0}>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                   <DialogTrigger asChild>
@@ -178,7 +173,6 @@ export const BudgetsPage = () => {
                 </Dialog>
               </span>
             </TooltipTrigger>
-            {/* Conditionally render the tooltip content only when disabled */}
             {isViewingPastMonth && (
               <TooltipContent>
                 <p>Cannot create budgets for past months.</p>
@@ -186,11 +180,9 @@ export const BudgetsPage = () => {
             )}
           </Tooltip>
         </TooltipProvider>
-        {/* --- MODIFICATION END --- */}
       </div>
       <Separator />
 
-      {/* ... (The rest of the component JSX remains exactly the same) ... */}
       {isLoading && <p>Loading budgets...</p>}
 
       {!isLoading && budgets?.length === 0 && (

@@ -43,7 +43,7 @@ export const ReceiptList = ({ transactionId }: ReceiptListProps) => {
 
   if (isLoading)
     return <div className="text-center p-4">Loading receipts...</div>;
-  if (!receipts || receipts.length === 0) return null; // Don't render anything if no receipts
+  if (!receipts || receipts.length === 0) return null; 
 
   return (
     <div className="space-y-2">

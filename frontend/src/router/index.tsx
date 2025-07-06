@@ -1,4 +1,3 @@
-// --- File: frontend/src/router/index.tsx ---
 import { createBrowserRouter } from "react-router-dom";
 import { DashboardPage } from "../pages/DashboardPage";
 import { LoginPage } from "../pages/LoginPage";
@@ -35,7 +34,6 @@ export const router = createBrowserRouter([
     errorElement: <_404Page />,
     children: [
       {
-        // AppLayout acts as the container for all authenticated pages
         element: <AppLayout />,
         children: [
           { path: "/dashboard", element: <DashboardPage /> },

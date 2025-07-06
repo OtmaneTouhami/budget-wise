@@ -110,7 +110,7 @@ export const RecurringTransactionForm = ({
 
   const handleTypeChange = (type: TransactionResponseCategoryType) => {
     if (selectedType !== type) {
-      form.setValue("categoryId", ""); // Reset category when type changes
+      form.setValue("categoryId", "");
     }
     setSelectedType(type);
   };
@@ -128,7 +128,6 @@ export const RecurringTransactionForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {/* --- ADDED: TYPE TOGGLE BUTTONS --- */}
         <FormItem>
           <FormLabel>Rule Type</FormLabel>
           <div className="grid grid-cols-2 gap-2">
@@ -169,7 +168,6 @@ export const RecurringTransactionForm = ({
           )}
         />
 
-        {/* --- ADDED: CONDITIONAL CATEGORY COMBOBOX --- */}
         {selectedType && (
           <FormField
             control={form.control}

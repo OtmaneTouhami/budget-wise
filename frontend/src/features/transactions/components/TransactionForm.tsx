@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/transactions/components/TransactionForm.tsx ---
 import * as React from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -165,7 +164,6 @@ export const TransactionForm = ({
           />
         )}
 
-        {/* --- THIS IS THE CORRECTED SECTION --- */}
         <FormField
           control={form.control}
           name="transactionDate"
@@ -207,7 +205,6 @@ export const TransactionForm = ({
             </FormItem>
           )}
         />
-        {/* --- END OF CORRECTION --- */}
 
         <FormField
           control={form.control}

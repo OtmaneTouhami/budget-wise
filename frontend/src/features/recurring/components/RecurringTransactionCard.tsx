@@ -48,14 +48,11 @@ export const RecurringTransactionCard = ({
   const currencySymbol = useCurrency();
   const updateStatusMutation = useUpdateStatus();
 
-  // --- FIX: LOCAL LOADING STATE ---
-  // This state is unique to each card instance.
   const [isToggleLoading, setIsToggleLoading] = React.useState(false);
   const [showCannotDeleteAlert, setShowCannotDeleteAlert] =
     React.useState(false);
 
   const handleStatusChange = (isActive: boolean) => {
-    // --- FIX: Set local loading state before mutation ---
     setIsToggleLoading(true);
     updateStatusMutation.mutate(
       { id: rule.id!, data: { isActive } },
@@ -71,7 +68,6 @@ export const RecurringTransactionCard = ({
         onError: (err) => {
           toast.error((err as { data: ApiErrorResponse }).data.message);
         },
-        // --- FIX: Use onSettled to always turn off loading state ---
         onSettled: () => {
           setIsToggleLoading(false);
         },
@@ -121,7 +117,6 @@ export const RecurringTransactionCard = ({
         </CardContent>
         <CardFooter className="flex justify-between">
           <div className="flex items-center space-x-2">
-            {/* --- FIX: Disable based on local state --- */}
             <Switch
               id={`status-${rule.id}`}
               checked={rule.active}

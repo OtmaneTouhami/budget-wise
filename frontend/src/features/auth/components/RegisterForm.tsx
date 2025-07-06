@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/auth/components/RegisterForm.tsx ---
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -45,7 +44,7 @@ export const RegisterForm = () => {
       firstName: "",
       lastName: "",
       phoneNumber: "",
-      countryId: undefined, // Default to undefined
+      countryId: undefined,
     },
   });
 
@@ -58,7 +57,6 @@ export const RegisterForm = () => {
       navigate("/verify", { state: { identifier: values.email } });
     } catch (error) {
       const apiError = error as { data: ApiErrorResponse };
-      // The improved backend error now gives specific messages here
       toast.error(
         apiError.data?.message || "An error occurred during registration."
       );
@@ -152,8 +150,6 @@ export const RegisterForm = () => {
           />
         </div>
 
-        {/* --- REPLACEMENT START --- */}
-        {/* Replace the old phoneNumber and countryId fields with this */}
         <FormField
           control={form.control}
           name="phoneNumber"
@@ -176,7 +172,7 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-        {/* This field is now controlled by the CountryPhoneInput, but we still need it for validation */}
+
         <FormField
           control={form.control}
           name="countryId"
@@ -186,7 +182,6 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-        {/* --- REPLACEMENT END --- */}
 
         <div className="flex flex-col gap-4 pt-4">
           <Button

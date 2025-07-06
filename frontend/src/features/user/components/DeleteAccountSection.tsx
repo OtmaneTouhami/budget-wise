@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/user/components/DeleteAccountSection.tsx ---
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 

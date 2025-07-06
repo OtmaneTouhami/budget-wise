@@ -5,7 +5,7 @@ import { setupAxiosLogger } from "./api-logger";
 
 const refreshInstance = axios.create({
   baseURL: "/api/v1",
-  timeout: 10000, // Adding a reasonable timeout
+  timeout: 10000,
 });
 
 // Set up logger for the refresh token instance

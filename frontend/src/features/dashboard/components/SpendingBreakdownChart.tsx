@@ -49,7 +49,7 @@ export const SpendingBreakdownChart = ({
     outerRadius,
     percent,
   }: any) => {
-    if (percent < 0.05) return null; // Don't show labels for small segments
+    if (percent < 0.05) return null;
 
     const RADIAN = Math.PI / 180;
     const radius = outerRadius * 0.8;

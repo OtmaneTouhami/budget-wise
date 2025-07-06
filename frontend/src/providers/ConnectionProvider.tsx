@@ -69,7 +69,6 @@ export const ConnectionProvider: React.FC<ConnectionProviderProps> = ({
   );
 };
 
-// Optional ConnectionStatus component to show in the UI
 export const ConnectionStatus: React.FC = () => {
   const { status, checkNow } = useConnection();
 

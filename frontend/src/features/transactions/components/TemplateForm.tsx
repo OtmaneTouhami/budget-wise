@@ -88,7 +88,6 @@ export const TemplateForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* --- TYPE TOGGLE BUTTONS --- */}
         <FormItem>
           <FormLabel>Template Type</FormLabel>
           <div className="grid grid-cols-2 gap-2">
@@ -129,7 +128,6 @@ export const TemplateForm = ({
           )}
         />
 
-        {/* --- CONDITIONAL CATEGORY COMBOBOX --- */}
         {selectedType && (
           <FormField
             control={form.control}

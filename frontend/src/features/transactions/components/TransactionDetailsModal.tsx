@@ -15,8 +15,6 @@ import { getGetReceiptsForTransactionQueryKey } from "@/api/generated/hooks/rece
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-
-// --- IMPORT THE NEW COMPONENTS ---
 import { ReceiptUploader } from "./ReceiptUploader";
 import { ReceiptList } from "./ReceiptList";
 
@@ -56,7 +54,6 @@ export const TransactionDetailsModal = ({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          {/* Transaction Info Table (no changes here) */}
           <Table>
             <TableBody>
               <TableRow>
@@ -105,7 +102,6 @@ export const TransactionDetailsModal = ({
 
           <Separator />
 
-          {/* --- NEW RECEIPTS SECTION --- */}
           <div className="space-y-4">
             <ReceiptList transactionId={transaction.id!} />
             <ReceiptUploader

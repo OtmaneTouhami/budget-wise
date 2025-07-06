@@ -1,6 +1,5 @@
 /**
  * API Logger utility for debugging API connection issues
- * Use this to add logging to your API requests and responses
  */
 
 import axios from "axios";
@@ -61,20 +60,6 @@ export async function checkApiConnection(baseURL: string): Promise<boolean> {
       // Don't throw errors on non-2xx responses
       validateStatus: () => true,
     });
-
-    // Try a HEAD request to the root path
-    try {
-      const rootCheck = await tempInstance.head("/", {
-        headers: { "Cache-Control": "no-cache" },
-      });
-
-      if (rootCheck.status < 500) {
-        console.log(`✅ Successfully connected to ${baseURL} via root path`);
-        return true;
-      }
-    } catch (rootError) {
-      // Root HEAD might not be supported, try a final approach
-    }
 
     // As a last resort, try OPTIONS request which many servers support
     const optionsCheck = await tempInstance.options("/");

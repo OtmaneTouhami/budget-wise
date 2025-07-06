@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/budgets/components/BudgetForm.tsx ---
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +25,6 @@ interface BudgetFormProps {
   onSubmit: (values: BudgetFormSchema) => void;
   isLoading: boolean;
   initialData?: BudgetResponse;
-  // --- FIX: Add this prop back to receive the IDs ---
   excludedCategoryIds?: string[];
 }
 
@@ -34,7 +32,6 @@ export const BudgetForm = ({
   onSubmit,
   isLoading,
   initialData,
-  // --- FIX: Destructure the prop ---
   excludedCategoryIds = [],
 }: BudgetFormProps) => {
   const form = useForm<BudgetFormSchema>({
@@ -70,7 +67,6 @@ export const BudgetForm = ({
                   value={field.value}
                   onChange={field.onChange}
                   disabled={isLoading || !!initialData}
-                  // --- FIX: Pass the excluded IDs to the combobox ---
                   excludedCategoryIds={excludedCategoryIds}
                 />
               </FormControl>

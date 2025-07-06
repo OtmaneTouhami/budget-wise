@@ -32,7 +32,6 @@ export function DataTableToolbar<TData>({
   const categoryColumn = table.getColumn("categoryName");
   const typeColumn = table.getColumn("categoryType");
 
-  // A filter is active if any of the remaining filters are set
   const isFiltered =
     categoryColumn?.getIsFiltered() ||
     typeColumn?.getIsFiltered() ||
@@ -70,7 +69,6 @@ export function DataTableToolbar<TData>({
             </SelectContent>
           </Select>
 
-          {/* The "Source" filter has been removed from here */}
 
           <div className="w-[200px]">
             <CategoryCombobox

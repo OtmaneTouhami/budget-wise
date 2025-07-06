@@ -1,4 +1,3 @@
-// --- File: frontend/src/features/notifications/components/NotificationItem.tsx ---
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";

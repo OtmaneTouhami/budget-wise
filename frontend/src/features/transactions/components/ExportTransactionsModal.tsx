@@ -14,7 +14,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { instance as axiosInstance } from "@/api/api-client"; // Import the configured axios instance
+import { instance as axiosInstance } from "@/api/api-client"; 
 
 interface ExportTransactionsModalProps {
   isOpen: boolean;
@@ -46,11 +46,10 @@ export const ExportTransactionsModal = ({
     toast.info("Preparing your export. This may take a moment...");
 
     try {
-      // We use the raw axios instance here because we need to handle a Blob response,
-      // not the standard JSON our apiClient is configured for.
+      // Prepare the parameters for the export
       const response = await axiosInstance.get("/transactions/export", {
         params,
-        responseType: "blob", // This is crucial!
+        responseType: "blob",
       });
 
       // Create a Blob from the response

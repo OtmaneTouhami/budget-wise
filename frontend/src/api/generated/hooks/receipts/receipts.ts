@@ -190,15 +190,12 @@ export function useGetReceiptsForTransaction<
 
 export const uploadReceipt = (
   transactionId: string,
-  // The type for the body should be FormData, but we can cast it later
   uploadReceiptBody: FormData, 
   signal?: AbortSignal,
 ) => {
   return apiClient<ReceiptResponse>({
     url: `/transactions/${transactionId}/receipts`,
     method: "POST",
-    // --- THIS IS THE FIX: REMOVE THE HEADERS LINE ---
-    // headers: { "Content-Type": "application/json" }, // <--- DELETE THIS LINE
     data: uploadReceiptBody,
     signal,
   });

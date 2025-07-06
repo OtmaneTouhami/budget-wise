@@ -13,7 +13,6 @@ export const useCategoryDetails = (categoryId: string | undefined) => {
   const categoryQuery = useGetCategoryById(categoryId!, {
     query: {
       // Only run the query if we have an access token and a valid categoryId.
-      // The `!` after categoryId is safe because of this `enabled` check.
       enabled: !!accessToken && !!categoryId,
     },
   });
