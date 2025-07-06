@@ -15,6 +15,10 @@ spring:
           batch_size: 50
         order_inserts: true
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 server:
   port: 8080
