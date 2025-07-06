@@ -6,6 +6,8 @@ import { useAuthStore } from "@/store/auth-store";
 import { refreshAuthTokens } from "@/api/auth-refresh";
 import { isTokenExpired } from "@/api/auth-utils";
 import { toast } from "sonner";
+import { ConnectionProvider } from "./ConnectionProvider";
+import { ConnectionErrorDialog } from "@/components/ConnectionErrorDialog";
 
 /**
  * TokenRefreshManager - Component that handles periodic token refresh
@@ -60,11 +62,14 @@ const TokenRefreshManager: React.FC = () => {
 export const AppProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <TanstackProvider>
-      <AuthProvider>
-        <TokenRefreshManager />
-        {children}
-        <Toaster />
-      </AuthProvider>
+      <ConnectionProvider>
+        <AuthProvider>
+          <TokenRefreshManager />
+          {children}
+          <ConnectionErrorDialog />
+          <Toaster />
+        </AuthProvider>
+      </ConnectionProvider>
     </TanstackProvider>
   );
 };

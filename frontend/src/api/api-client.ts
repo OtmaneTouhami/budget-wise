@@ -7,6 +7,7 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 import { useAuthStore } from "../store/auth-store";
+import { setupAxiosLogger } from "./api-logger";
 
 const baseURL = "/api/v1";
 
@@ -15,7 +16,11 @@ const baseURL = "/api/v1";
  */
 export const instance = axios.create({
   baseURL,
+  timeout: 10000, // Adding a reasonable timeout
 });
+
+// Setup logger for the main API instance
+setupAxiosLogger(instance, "Main API");
 
 /**
  * Request Interceptor: Attaches the JWT access token to every outgoing request.

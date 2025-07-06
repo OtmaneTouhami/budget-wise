@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useAuthStore } from "@/store/auth-store";
 import { refreshAuthTokens } from "@/api/auth-refresh";
+import { useConnection } from "./ConnectionProvider";
+import { toast } from "sonner";
 
 interface AuthProviderProps {
   children: ReactNode;

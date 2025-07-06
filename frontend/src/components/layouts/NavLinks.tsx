@@ -63,15 +63,21 @@ export const NavLinks = ({ isSidebarOpen }: NavLinksProps) => {
           )
         }
       >
-        <link.icon className="h-5 w-5 flex-shrink-0" />
+        <div className="relative">
+          <link.icon className="h-5 w-5 flex-shrink-0" />
+          {isNotificationLink && unreadCount > 0 && !isSidebarOpen && (
+            <span className="absolute -right-1 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+              {unreadCount}
+            </span>
+          )}
+        </div>
         <span className={cn("truncate", !isSidebarOpen && "hidden")}>
           {link.text}
         </span>
-        {isNotificationLink && unreadCount > 0 && (
+        {isNotificationLink && unreadCount > 0 && isSidebarOpen && (
           <span
             className={cn(
-              "absolute flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white",
-              isSidebarOpen ? "right-3" : "top-1 right-1 h-4 w-4 text-[10px]"
+              "absolute right-3  flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
             )}
           >
             {unreadCount}

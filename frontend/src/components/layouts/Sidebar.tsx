@@ -4,8 +4,9 @@ import { NavLinks } from "./NavLinks";
 import { UserProfileMenu } from "@/features/auth/components/UserProfileMenu";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { logo, logoName } from "@/assets/images";
+import { logo } from "@/assets/images";
 import { PanelLeftClose, PanelRightClose } from "lucide-react";
+import { ConnectionStatus } from "@/providers/ConnectionProvider";
 
 export const Sidebar = () => {
   const { isSidebarOpen, toggleSidebar } = useUiStore();
@@ -71,6 +72,12 @@ export const Sidebar = () => {
         {/* The footer content is now inside the same scrolling container but pushed down */}
         <div className="mt-auto flex flex-col gap-2 pt-2">
           <Separator />
+          {/* Connection status indicator */}
+          {isSidebarOpen && (
+            <div className="px-3 py-1 text-xs">
+              <ConnectionStatus />
+            </div>
+          )}
           <UserProfileMenu isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
