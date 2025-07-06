@@ -36,7 +36,13 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           isAuth: false,
         }),
-      setTokens: (tokens) => set({ ...tokens }),
+      setTokens: (tokens) =>
+        set((state) => ({
+          ...state,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          isAuth: true, // Ensure isAuth is set to true when tokens are updated
+        })),
     }),
     {
       name: "auth-storage", // Name for the localStorage item

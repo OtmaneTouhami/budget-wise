@@ -101,13 +101,22 @@ export const DashboardPage = () => {
         <BiggestExpenseCard data={dashboardData.biggestExpense} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      {/* Spending Trend Chart */}
+      <div className="grid gap-4">
+        <div className="w-full">
           <SpendingTrendChart data={dashboardData.spendingTrend || []} />
         </div>
-        <div className="lg:col-span-1">
+      </div>
+
+      {/* Expense Breakdown - Full row and slightly bigger */}
+      <div className="grid gap-4">
+        <div className="w-full">
           <SpendingBreakdownChart data={dashboardData.expenseBreakdown || []} />
         </div>
+      </div>
+
+      {/* Budget Overview and Recent Transactions */}
+      <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-1">
           <BudgetOverview data={dashboardData.budgetProgress || []} />
         </div>

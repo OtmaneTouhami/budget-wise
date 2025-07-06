@@ -63,11 +63,21 @@ instance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // If the error is not a 401, or it's a 401 for the refresh token endpoint itself, reject it.
+    // If there's no config (cancelled request) or no response, just reject
+    if (!originalRequest || !error.response) {
+      return Promise.reject(error);
+    }
+
+    // If the error is not a 401/403, or it's for the refresh token endpoint itself, reject it
     if (
-      error.response?.status !== 401 ||
-      originalRequest.url === "/auth/refresh"
+      (error.response?.status !== 401 && error.response?.status !== 403) ||
+      originalRequest.url?.includes("auth/refresh")
     ) {
+      return Promise.reject(error);
+    }
+
+    // Avoid retrying already retried requests
+    if (originalRequest._retry) {
       return Promise.reject(error);
     }
 
@@ -75,10 +85,14 @@ instance.interceptors.response.use(
       // If we are already refreshing, add the new failed request to a queue
       return new Promise(function (resolve, reject) {
         failedQueue.push({ resolve, reject });
-      }).then((token) => {
-        originalRequest.headers["Authorization"] = "Bearer " + token;
-        return instance(originalRequest);
-      });
+      })
+        .then((token) => {
+          originalRequest.headers["Authorization"] = "Bearer " + token;
+          return instance(originalRequest);
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        });
     }
 
     originalRequest._retry = true;
@@ -93,17 +107,23 @@ instance.interceptors.response.use(
     }
 
     try {
-      // Make the call to the refresh token endpoint
-      const response = await axios.post(
-        `${baseURL}/auth/refresh`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${refreshToken}` },
-        }
-      );
+      console.log("Attempting to refresh the token");
 
-      const { access_token: newAccessToken, refresh_token: newRefreshToken } =
-        response.data;
+      // Import the refresh function directly to avoid circular dependencies
+      const { refreshAuthTokens } = await import("./auth-refresh");
+
+      // Use our custom refresh function that properly handles the proxy
+      const response = await refreshAuthTokens();
+
+      console.log("Token refresh successful");
+
+      const newAccessToken = response.access_token || "";
+      const newRefreshToken = response.refresh_token || "";
+
+      // Don't proceed if tokens are missing
+      if (!newAccessToken || !newRefreshToken) {
+        throw new Error("Received invalid tokens from refresh request");
+      }
 
       // Update the tokens in our global store
       setTokens({ accessToken: newAccessToken, refreshToken: newRefreshToken });
@@ -117,6 +137,8 @@ instance.interceptors.response.use(
       // Retry the original request
       return instance(originalRequest);
     } catch (refreshError) {
+      console.error("Token refresh failed:", refreshError);
+
       // If the refresh call fails, logout the user and reject all queued requests
       processQueue(refreshError as AxiosError, null);
       logout();

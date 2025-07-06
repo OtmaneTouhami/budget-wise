@@ -15,45 +15,60 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { ApiErrorResponse } from "@/types/error";
+import { cn } from "@/lib/utils";
 
-export const UserProfileMenu = () => {
+interface UserProfileMenuProps {
+  isSidebarOpen: boolean;
+}
+
+export const UserProfileMenu = ({ isSidebarOpen }: UserProfileMenuProps) => {
   const navigate = useNavigate();
   const { user, logout: authStoreLogout } = useAuthStore();
   const logoutMutation = useLogout();
 
   const handleLogout = async () => {
     try {
-      // Call the API endpoint to invalidate the token on the backend
       await logoutMutation.mutateAsync();
       toast.success("You have been logged out.");
     } catch (error) {
-      // Even if the API call fails, we should still clear the client-side state
       const apiError = error as { data: ApiErrorResponse };
       toast.error(apiError.data?.message || "Logout failed. Please try again.");
     } finally {
-      // Clear user state from Zustand and redirect
       authStoreLogout();
       navigate("/login");
     }
   };
-  
+
   const getInitials = (firstName?: string, lastName?: string) => {
-    return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
-  }
+    return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+  };
 
   if (!user) return null;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex h-auto w-full items-center justify-start gap-3 p-2">
-          <Avatar className="h-8 w-8">
+        <Button
+          variant="ghost"
+          className={cn(
+            "flex h-auto w-full items-center gap-3 p-2",
+            isSidebarOpen ? "justify-start" : "justify-center"
+          )}
+        >
+          <Avatar className="h-8 w-8 flex-shrink-0">
             <AvatarFallback>
-                {getInitials(user.firstName, user.lastName)}
+              {getInitials(user.firstName, user.lastName)}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start">
-            <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
+          <div
+            className={cn(
+              "flex flex-col items-start truncate",
+              !isSidebarOpen && "hidden"
+            )}
+          >
+            <span className="text-sm font-medium">
+              {user.firstName} {user.lastName}
+            </span>
             <span className="text-xs text-muted-foreground">{user.email}</span>
           </div>
         </Button>

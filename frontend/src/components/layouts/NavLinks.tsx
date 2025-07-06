@@ -11,6 +11,12 @@ import {
 import { cn } from "@/lib/utils";
 import { useGetMyNotifications } from "@/api/generated/hooks/notifications/notifications";
 import { useAuthStore } from "@/store/auth-store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const mainLinks = [
   { to: "/dashboard", icon: BarChart, text: "Dashboard" },
@@ -19,17 +25,19 @@ const mainLinks = [
   { to: "/recurring", icon: Repeat, text: "Recurring" },
 ];
 
-const settingsLinks = [{ to: "/settings", icon: Settings, text: "Settings" }];
+const bottomLinks = [
+  { to: "/notifications", icon: Bell, text: "Notifications" },
+  { to: "/settings", icon: Settings, text: "Settings" },
+];
 
-export const NavLinks = () => {
+interface NavLinksProps {
+  isSidebarOpen: boolean;
+}
+
+export const NavLinks = ({ isSidebarOpen }: NavLinksProps) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const { data: notifications } = useGetMyNotifications({
-    query: {
-      // Only fetch if the user is logged in
-      enabled: !!accessToken,
-      // Refetch every 30 seconds to keep the badge up-to-date
-      refetchInterval: 30000,
-    },
+    query: { enabled: !!accessToken, refetchInterval: 30000 },
   });
 
   const unreadCount = React.useMemo(
@@ -37,56 +45,74 @@ export const NavLinks = () => {
     [notifications]
   );
 
-  return (
-    <nav className="flex flex-col gap-2">
-      {mainLinks.map((link) => (
-        <NavLink
-          key={link.to}
-          to={link.to}
-          className={({ isActive }) =>
-            cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-              isActive && "bg-muted text-primary"
-            )
-          }
-        >
-          <link.icon className="h-4 w-4" />
-          {link.text}
-        </NavLink>
-      ))}
-      {/* Notifications Link with Badge */}
+  const renderNavLink = (link: {
+    to: string;
+    icon: React.ElementType;
+    text: string;
+  }) => {
+    const isNotificationLink = link.to === "/notifications";
+
+    const linkContent = (
       <NavLink
-        to="/notifications"
+        to={link.to}
         className={({ isActive }) =>
           cn(
             "relative flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-            isActive && "bg-muted text-primary"
+            isActive && "bg-muted text-primary",
+            !isSidebarOpen && "justify-center"
           )
         }
       >
-        <Bell className="h-4 w-4" />
-        Notifications
-        {unreadCount > 0 && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+        <link.icon className="h-5 w-5 flex-shrink-0" />
+        <span className={cn("truncate", !isSidebarOpen && "hidden")}>
+          {link.text}
+        </span>
+        {isNotificationLink && unreadCount > 0 && (
+          <span
+            className={cn(
+              "absolute flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white",
+              isSidebarOpen ? "right-3" : "top-1 right-1 h-4 w-4 text-[10px]"
+            )}
+          >
             {unreadCount}
           </span>
         )}
       </NavLink>
-      {settingsLinks.map((link) => (
-        <NavLink
-          key={link.to}
-          to={link.to}
-          className={({ isActive }) =>
-            cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-              isActive && "bg-muted text-primary"
-            )
-          }
-        >
-          <link.icon className="h-4 w-4" />
-          {link.text}
-        </NavLink>
+    );
+
+    if (!isSidebarOpen) {
+      return (
+        <TooltipProvider>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+            <TooltipContent side="right">
+              <p>{link.text}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+    return linkContent;
+  };
+
+  return (
+    <nav className="flex flex-col gap-1 py-4">
+      {mainLinks.map((link) => (
+        <div key={link.to}>{renderNavLink(link)}</div>
       ))}
+      <div className="mt-4 space-y-1">
+        <h4
+          className={cn(
+            "px-3 text-xs font-semibold text-muted-foreground",
+            !isSidebarOpen && "text-center"
+          )}
+        >
+          {isSidebarOpen ? "General" : "•"}
+        </h4>
+        {bottomLinks.map((link) => (
+          <div key={link.to}>{renderNavLink(link)}</div>
+        ))}
+      </div>
     </nav>
   );
 };

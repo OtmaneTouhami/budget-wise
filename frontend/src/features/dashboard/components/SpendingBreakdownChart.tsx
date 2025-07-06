@@ -1,21 +1,82 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { useCurrency } from "@/hooks/use-currency";
 import type { CategorySpending } from "@/api/generated/hooks/openAPIDefinition.schemas";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF", "#FF4560", "#775DD0"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#AF19FF",
+  "#FF4560",
+  "#775DD0",
+];
 
 interface SpendingBreakdownChartProps {
   data: CategorySpending[];
 }
 
-export const SpendingBreakdownChart = ({ data }: SpendingBreakdownChartProps) => {
+export const SpendingBreakdownChart = ({
+  data,
+}: SpendingBreakdownChartProps) => {
   const currencySymbol = useCurrency();
+
+  // Calculate total spending for percentage calculation
+  const totalSpending = data.reduce(
+    (sum, item) => sum + (item.totalAmount || 0),
+    0
+  );
+
+  // Calculate percentage for each category
+  const enhancedData = data.map((item) => ({
+    ...item,
+    percentage:
+      totalSpending > 0 ? ((item.totalAmount || 0) / totalSpending) * 100 : 0,
+  }));
+
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: any) => {
+    if (percent < 0.05) return null; // Don't show labels for small segments
+
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 0.8;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        fontSize="12"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Expense Breakdown</CardTitle>
+        <CardDescription>
+          Where your money goes - categorized spending analysis
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
@@ -23,41 +84,82 @@ export const SpendingBreakdownChart = ({ data }: SpendingBreakdownChartProps) =>
             No expense data for this period.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="h-[300px]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="h-[350px] lg:col-span-2">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Tooltip
-                    contentStyle={{ borderRadius: "0.5rem", background: "hsl(var(--background))" }}
-                    formatter={(value: number) => `${currencySymbol}${value.toFixed(2)}`}
+                    contentStyle={{
+                      borderRadius: "0.5rem",
+                      background: "hsl(var(--background))",
+                    }}
+                    formatter={(value: number, name: string, props: any) => [
+                      `${currencySymbol}${value.toFixed(2)} (${props.payload.percentage.toFixed(1)}%)`,
+                      name,
+                    ]}
                   />
                   <Pie
-                    data={data}
+                    data={enhancedData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    outerRadius={100}
+                    label={renderCustomizedLabel}
+                    outerRadius={130}
+                    innerRadius={60}
                     fill="#8884d8"
                     dataKey="totalAmount"
                     nameKey="categoryName"
+                    paddingAngle={2}
                   >
-                    {data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    {enhancedData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                        stroke="hsl(var(--background))"
+                        strokeWidth={1}
+                      />
                     ))}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex flex-col justify-center space-y-2">
-              {data.map((entry, index) => (
-                <div key={`legend-${index}`} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}/>
-                    <span className="text-sm text-muted-foreground">{entry.categoryName}</span>
+            <div className="lg:col-span-1">
+              <h3 className="font-medium mb-4">Category Breakdown</h3>
+              <div className="space-y-4">
+                {enhancedData.map((entry, index) => (
+                  <div key={`legend-${index}`} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-3 w-3 rounded-full"
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
+                        />
+                        <span className="font-medium">
+                          {entry.categoryName}
+                        </span>
+                      </div>
+                      <span className="font-semibold">
+                        {currencySymbol}
+                        {entry.totalAmount?.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-1.5">
+                      <div
+                        className="h-1.5 rounded-full"
+                        style={{
+                          width: `${entry.percentage}%`,
+                          backgroundColor: COLORS[index % COLORS.length],
+                        }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-right">
+                      {entry.percentage.toFixed(1)}% of total
+                    </p>
                   </div>
-                  <span className="font-semibold text-sm">{currencySymbol}{entry.totalAmount?.toFixed(2)}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}

@@ -1,7 +1,5 @@
 // --- File: frontend/src/router/index.tsx ---
-import { createBrowserRouter } from "react-router-dom";
-
-// Import Pages
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { DashboardPage } from "../pages/DashboardPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
@@ -14,60 +12,42 @@ import { TransactionsPage } from "@/pages/TransactionsPage";
 import { RecurringTransactionsPage } from "@/pages/RecurringTransactionsPage";
 import { NotificationsPage } from "@/pages/NotificationsPage";
 import { LandingPage } from "@/pages/LandingPage";
-
-// Import Layouts and Route Guards
 import { AppLayout } from "../components/layouts/AppLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { GuestRoute } from "./GuestRoute";
 
 export const router = createBrowserRouter([
-  // --- GUEST ROUTES ---
-  // These routes are for unauthenticated users.
-  // Logged-in users trying to access these will be redirected to "/dashboard".
+  // Guest-only routes
   {
     element: <GuestRoute />,
     errorElement: <_404Page />,
     children: [
-      {
-        path: "/",
-        element: <LandingPage />,
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "/verify",
-        element: <VerifyPage />,
-      },
+      { path: '/', element: <LandingPage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+      { path: '/verify', element: <VerifyPage /> },
     ],
   },
-
-  // --- PROTECTED APP ROUTES ---
-  // These routes require authentication.
-  // Unauthenticated users trying to access these will be redirected to "/login".
+  
+  // Protected app routes
   {
+    path: '/', 
     element: <ProtectedRoute />,
     errorElement: <_404Page />,
     children: [
       {
-        path: "/dashboard", // The main entry point for logged-in users
+        // AppLayout acts as the container for all authenticated pages
         element: <AppLayout />,
         children: [
-          {
-            index: true, // Render DashboardPage at /dashboard
-            element: <DashboardPage />,
-          },
-          { path: "transactions", element: <TransactionsPage /> },
-          { path: "budgets", element: <BudgetsPage /> },
-          { path: "recurring", element: <RecurringTransactionsPage /> },
-          { path: "notifications", element: <NotificationsPage /> },
-          { path: "profile", element: <ProfilePage /> },
-          { path: "settings", element: <SettingsPage /> },
+          // Redirect from root to dashboard for logged-in users
+          { index: true, element: <Navigate to="/dashboard" replace /> }, 
+          { path: 'dashboard', element: <DashboardPage /> },
+          { path: 'transactions', element: <TransactionsPage /> },
+          { path: 'budgets', element: <BudgetsPage /> },
+          { path: 'recurring', element: <RecurringTransactionsPage /> },
+          { path: 'notifications', element: <NotificationsPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'settings', element: <SettingsPage /> },
         ],
       },
     ],
